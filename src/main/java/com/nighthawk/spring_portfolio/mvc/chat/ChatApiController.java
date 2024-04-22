@@ -22,7 +22,7 @@ public class ChatApiController {
     @Autowired
     private ChatJpaRepository chatJpaRepository; 
     
-    @PostMapping("create")
+    @PostMapping("/create")
     public String sendMessage(@RequestParam String email, @RequestParam String message, @RequestParam String fromEmail, @RequestParam long personId, @RequestParam long fromPersonId){
         Chat chat = new Chat(email, message, fromEmail, personId, fromPersonId);
         Chat savedChat = chatJpaRepository.save(chat);
@@ -31,7 +31,7 @@ public class ChatApiController {
         return "Message Sent Successfully. ID: " + savedChat.getId();
     }
     
-    @GetMapping("read")
+    @GetMapping("/read")
     public ResponseEntity<List<Chat>> readUnreadMessages(@RequestParam String email, @RequestParam String fromEmail) throws JsonProcessingException{
         List<Chat> unreadMessages = chatJpaRepository.findByEmailAndFromEmailAndReadFlagOrderByDateSent(email, fromEmail, false);
         List<Chat> unreadMessagesNew = new ArrayList<Chat>();
@@ -43,7 +43,7 @@ public class ChatApiController {
         return new ResponseEntity<List<Chat>>(unreadMessagesNew, HttpStatus.OK);
     }
     
-    @GetMapping("history")
+    @GetMapping("/history")
     public ResponseEntity<List<Chat>> readAllMessages(@RequestParam String email, @RequestParam String fromEmail) throws JsonProcessingException{
     	System.out.println("Email: " + email);
     	System.out.println("From Email: " + fromEmail);
@@ -52,7 +52,7 @@ public class ChatApiController {
         return new ResponseEntity<List<Chat>>(histMessages, HttpStatus.OK);
     }
     
-    @DeleteMapping("history/clear")
+    @DeleteMapping("/history/clear")
     public void deleteMessages(@RequestParam String email, @RequestParam String fromEmail) throws JsonProcessingException{
     	System.out.println("Email: " + email);
     	System.out.println("From Email: " + fromEmail);
