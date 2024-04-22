@@ -1,6 +1,7 @@
 package com.nighthawk.spring_portfolio;
 
 import org.springframework.lang.NonNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.*;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -20,6 +21,11 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(final @NonNull ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/volumes/uploads/**").addResourceLocations("file:volumes/uploads/");
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
     
     @Override
