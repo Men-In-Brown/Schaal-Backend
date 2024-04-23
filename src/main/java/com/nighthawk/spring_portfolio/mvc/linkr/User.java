@@ -1,5 +1,7 @@
 package com.nighthawk.spring_portfolio.mvc.linkr;
 
+import com.nighthawk.spring_portfolio.mvc.calendar.Calendar;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,9 @@ public class User {
     private int joined; 
 
     private int investments; 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Calendar userCalendar;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
