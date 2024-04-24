@@ -1,5 +1,8 @@
 package com.nighthawk.spring_portfolio.mvc.calendar;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nighthawk.spring_portfolio.mvc.linkr.User;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -19,10 +24,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/calendar")
 public class CalendarApiController {
-  @GetMapping("/getAll")
-  public String getMethodName(@RequestParam String param) {
-      return new String();
+
+  @Autowired
+  private CalendarJPARepository repository;
+
+  @GetMapping("/")
+  public ResponseEntity<List<Calendar>> getAllCalendars() {
+      return ResponseEntity.ok().body(repository.findAll());
   }
+
+  @GetMapping("/")
+  public ResponseEntity<Calendar> findSpecificCalendar(@RequestParam Long id) {
+      return ResponseEntity.ok().body(repository.findByName(id));
+  }
+  
+  
+  @GetMapping("/")
+  public String getMethodName(@RequestParam User user) {
+      //Calendar specificCalendar = findByPerson();
+  }
+  
+
   
 
    
