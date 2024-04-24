@@ -49,7 +49,7 @@ public class AssignmentApiController {
     @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable Long id) {
         Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
-    
+        
         return assignmentOptional.map(assignment -> new ResponseEntity<>(assignment, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -229,8 +229,8 @@ public class AssignmentApiController {
             quizRepository.save(quiz);
 
             //Grade it
-            /*ArrayList<Integer> submittedAnswers = (ArrayList<Integer>)attributeMap.get("answers");
-            Map<String, Object> questions = quizRepository.getById(Long.parseLong(Integer.toString(id))).getQuestions();
+            ArrayList<Integer> submittedAnswers = (ArrayList<Integer>)attributeMap.get("answers");
+            Map<String, Object> questions = quiz.getQuestions();
             
             int score = 0;
             int i = 0;
@@ -238,13 +238,13 @@ public class AssignmentApiController {
                 if(((Map<String, Object>)question.getValue()).get("correctAnswer") == submittedAnswers.get(i)) {
                     score++;
                 } else {
-
+                    
                 }
                 i++;
             }
 
             Grade grade = new Grade((String)attributeMap.get("username"), "temp", quiz.getTitle(), quiz.getMaxPoints(), score);
-            gradeRepository.save(grade);*/
+            gradeRepository.save(grade);
 
             // return Person with update Stats
             return new ResponseEntity<>(quiz, HttpStatus.OK);
