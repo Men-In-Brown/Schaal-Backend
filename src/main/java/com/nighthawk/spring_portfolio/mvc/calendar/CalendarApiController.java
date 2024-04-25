@@ -34,16 +34,18 @@ public class CalendarApiController {
   }
 
   @GetMapping("/")
-  public ResponseEntity<Calendar> findSpecificCalendar(@RequestParam Long id) {
-      return ResponseEntity.ok().body(repository.findByName(id));
+  public ResponseEntity<Calendar> findSpecificCalendar(@RequestParam String name) {
+      return ResponseEntity.ok().body(repository.findByName(name));
   }
   
   
   @GetMapping("/")
-  public String getMethodName(@RequestParam User user) {
-      //Calendar specificCalendar = findByPerson();
+  public ResponseEntity<Calendar> getByUser(@RequestParam User user) {
+      Calendar found = repository.findByUser();
+      return ResponseEntity.ok().body(found);
   }
-  
+ 
+
 
   
 

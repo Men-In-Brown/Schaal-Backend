@@ -5,17 +5,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nighthawk.spring_portfolio.mvc.linkr.User;
+
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Entity
 @Table(name = "Calendars")
+@Setter
+@Getter
 @NoArgsConstructor
 public class Calendar {
     
@@ -24,6 +31,14 @@ public class Calendar {
     private Long id;
 
     private CalendarEvent head;
+
+    private User user;
+
+    private String name; 
+
+    public Calendar(String user){
+        this.name = user; // change so that this isn't necessary TODO
+    } 
 
     public void addEvent(CalendarEvent event) {
         if (head == null) {
@@ -69,10 +84,10 @@ public class Calendar {
         this.head = head;
     }
 
-    public static void initCalendar(){
-            Calendar c1 = new Calendar();
-            Calendar c2 = new Calendar();
-            Calendar c3 = new Calendar();
+    public static Calendar[] initCalendar(){
+            Calendar c1 = new Calendar("VN");
+            Calendar c2 = new Calendar("TP");
+            Calendar c3 = new Calendar("PP");
         
             // Add events to calendar c1
             c1.addEvent(new CalendarEvent("Event 1", LocalDateTime.of(2024, 4, 21, 10, 0), LocalDateTime.of(2024, 4, 21, 11, 0)));
@@ -88,10 +103,14 @@ public class Calendar {
             c3.addEvent(new CalendarEvent("Meeting X", LocalDateTime.of(2024, 4, 21, 8, 0), LocalDateTime.of(2024, 4, 21, 9, 0)));
             c3.addEvent(new CalendarEvent("Meeting Y", LocalDateTime.of(2024, 4, 21, 10, 0), LocalDateTime.of(2024, 4, 21, 12, 0)));
             c3.addEvent(new CalendarEvent("Meeting Z", LocalDateTime.of(2024, 4, 21, 13, 0), LocalDateTime.of(2024, 4, 21, 14, 0)));
+
+            Calendar[] carr = {c1, c2, c3};
+
+            return carr;
     }
 
     public static void main(String[] args) {
-        Calendar calendar = new Calendar();
+        Calendar calendar = new Calendar("VAL");
 
         // Creating sample events
         CalendarEvent event1 = new CalendarEvent("Event 1", LocalDateTime.of(2024, 4, 21, 10, 0), LocalDateTime.of(2024, 4, 21, 11, 0));
@@ -113,5 +132,6 @@ public class Calendar {
         for (CalendarEvent event : foundEvents){
             System.out.println(event);
         }
+        System.out.println(calendar.getName());
     }
 }

@@ -10,10 +10,14 @@ import java.util.Optional;
 @Repository
 public interface CalendarJPARepository extends JpaRepository<Calendar, Long>{
 
-    Calendar findByName(Long id);
+    Calendar findByName(String name);
+
+    List<Calendar> findAllByName(String name);
     
     @Override
     List<Calendar> findAll();
+
+    Calendar findByUser();
 
     
 

@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.nighthawk.spring_portfolio.mvc.calendar.Calendar;
+import com.nighthawk.spring_portfolio.mvc.calendar.CalendarJPARepository;
 import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
 import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
@@ -24,7 +26,8 @@ public class ModelInit {
     @Autowired NoteJpaRepository noteRepo;
     @Autowired PersonDetailsService personService;
     @Autowired PersonRoleJpaRepository roleRepo;
-
+    @Autowired CalendarJPARepository calendarRepo;
+    
     @Bean
     CommandLineRunner run() {  // The run() method will be executed after the application starts
         return args -> {
@@ -67,6 +70,14 @@ public class ModelInit {
             }
             // for lesson demonstration: giving admin role to Mortensen
             personService.addRoleToPerson(personArray[1].getEmail(), "ROLE_ADMIN");
+
+            Calendar[] Carr = Calendar.initCalendar();
+            for(Calendar c : Carr){
+                List<Calendar> found = calendarRepo.findAllByName(c.getName());
+                if(found.size() == 0){
+                    calendarRepo.save(c);
+                }
+            }
         };
     }
 }
