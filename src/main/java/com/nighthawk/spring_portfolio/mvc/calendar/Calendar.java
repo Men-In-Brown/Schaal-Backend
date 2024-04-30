@@ -72,6 +72,18 @@ public class Calendar {
         return valid; // Return the first event found within the specified duration
     }
 
+    public static Calendar[] initCalendars(){
+        Calendar myCalendar = new Calendar((long) 1, new ArrayList<>(), "My Calendar");
+
+        // Adding some events to the calendar
+        myCalendar.add(new CalendarEvent(1L, "Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1"));
+        myCalendar.add(new CalendarEvent(2L, "Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
+        myCalendar.add(new CalendarEvent(3L, "Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
+
+        Calendar[] returnable = {myCalendar};
+
+        return returnable;
+    }
     public static void main(String[] args) {
         // Creating a calendar
         Calendar myCalendar = new Calendar((long) 1, new ArrayList<>(), "My Calendar");
