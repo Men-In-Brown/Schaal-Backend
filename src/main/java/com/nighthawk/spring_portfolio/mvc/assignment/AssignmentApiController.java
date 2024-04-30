@@ -159,17 +159,29 @@ public class AssignmentApiController {
             for (Map.Entry<String,Object> submission : request_map.entrySet())  {
                 // Add needed attributes to attributeMap
 
-                if(submission.getKey().equals("answers"))
+                if(submission.getKey().equals("contributors"))
                     if (submission.getValue() instanceof List) {
                         attributeMap.put(submission.getKey(), submission.getValue());
                     } else {
                         return new ResponseEntity<>("Contributors attribute should be a list", HttpStatus.BAD_REQUEST);
                     }
+                
+                if(submission.getKey().equals("title"))
+                    attributeMap.put(submission.getKey(), submission.getValue());
+                
+                if(submission.getKey().equals("desc"))
+                    attributeMap.put(submission.getKey(), submission.getValue());
+
+                if(submission.getKey().equals("link"))
+                    attributeMap.put(submission.getKey(), submission.getValue());
+
+                if(submission.getKey().equals("username"))
+                    attributeMap.put(submission.getKey(), submission.getValue());
             }
 
             //Does it have all attributes?
-            if(!(attributeMap.containsKey("answers")  && attributeMap.containsKey("username"))) {
-                return new ResponseEntity<>("Missing attributes. username and answers are required" + attributeMap, HttpStatus.BAD_REQUEST); 
+            if(!(attributeMap.containsKey("contributors")  && attributeMap.containsKey("title") && attributeMap.containsKey("desc") && attributeMap.containsKey("link"))) {
+                return new ResponseEntity<>("Missing attributes. username, contributors, title, desc, and link are required" + attributeMap, HttpStatus.BAD_REQUEST); 
             }
 
             // Set Date and Attributes to SQL HashMap
