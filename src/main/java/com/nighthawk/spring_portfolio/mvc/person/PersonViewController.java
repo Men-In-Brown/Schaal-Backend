@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class PersonViewController {
         return "person/update";
     }
 
+    @OneToMany
+    // Functionality
+    
     @PostMapping("/update")
     public String personUpdateSave(@Valid Person person, BindingResult bindingResult) {
         // Validation of Decorated PersonForm attributes
@@ -79,5 +83,7 @@ public class PersonViewController {
     public String person() {
         return "person/search";
     }
+
+    
 
 }
