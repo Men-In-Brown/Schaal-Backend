@@ -55,6 +55,22 @@ public class AssignmentApiController {
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/{id}/username")
+    public ResponseEntity<String> getUsername(@PathVariable Long id) {
+        Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+        if (assignmentOptional.isPresent()) {
+            Assignment assignment = assignmentOptional.get();
+            Map<String, Map<String, Object>> submissions = assignment.getSubmissions();
+            if (submissions!= null &&!submissions.isEmpty()) {
+                String username = (String) submissions.values().iterator().next().get("username");
+                return new ResponseEntity<>(username, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/post")
     public ResponseEntity<Object> postPerson(
     @RequestParam("title") String title,
