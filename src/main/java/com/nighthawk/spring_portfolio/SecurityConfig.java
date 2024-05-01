@@ -40,7 +40,7 @@ public class SecurityConfig {
 	@Autowired
 	private PersonDetailsService personDetailsService;
 
-    // @Bean  // Sets up password encoding style
+    @Bean  // Sets up password encoding style
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
