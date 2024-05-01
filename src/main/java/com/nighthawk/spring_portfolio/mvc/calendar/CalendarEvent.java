@@ -1,5 +1,6 @@
 package com.nighthawk.spring_portfolio.mvc.calendar;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -28,7 +29,7 @@ import com.nighthawk.spring_portfolio.mvc.calendar.Calendar;
 @NoArgsConstructor
 @AllArgsConstructor
 @Convert(attributeName ="calendarevent", converter = JsonType.class)
-public class CalendarEvent implements Comparable<CalendarEvent>{
+public class CalendarEvent implements Serializable, Comparable<CalendarEvent>{
 
     @Id 
     @Column(name = "id")
