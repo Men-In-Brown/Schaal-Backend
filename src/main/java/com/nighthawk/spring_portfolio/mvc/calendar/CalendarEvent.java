@@ -2,7 +2,6 @@ package com.nighthawk.spring_portfolio.mvc.calendar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Date;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -15,17 +14,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.nighthawk.spring_portfolio.mvc.calendar.Calendar;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Convert(attributeName ="calendar", converter = JsonType.class)
+@Convert(attributeName ="calendarevent", converter = JsonType.class)
 public class CalendarEvent implements Comparable<CalendarEvent>{
 
     @Id 
@@ -43,7 +45,17 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
 
     private String location;
 
+    @ManyToOne
+    @JoinColumn(name = "calendar", referencedColumnName = "id")
+    private Calendar calendar;
+
     //private CalendarEvent next; reference to the next node in the linked list implement if time
+    public CalendarEvent(String name, LocalDateTime startDate, LocalDateTime endDate, String location){
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+    }
 
     @Override
     public int compareTo(CalendarEvent calendarEvent) {
@@ -63,6 +75,13 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
         return name;
     }
 
+    public static CalendarEvent[] init(){
+        CalendarEvent c1 =  new CalendarEvent("Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1");
+        CalendarEvent c2 = new CalendarEvent("Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium");
+        CalendarEvent c3 =  new CalendarEvent("Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria");
+        CalendarEvent[] inits = {c1, c2, c3};
+        return inits;
+    }
     public static void main(String args[]){
         // Creating two CalendarEvent objects
         CalendarEvent event1 = new CalendarEvent();

@@ -8,14 +8,17 @@ import java.util.Date;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,8 +35,8 @@ public class Calendar {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ElementCollection
-    @Column(name = "Events")
+    @OneToMany(mappedBy = "calendar", fetch = FetchType.LAZY)
+    @Column(name = "events")
     private List<CalendarEvent> events; 
 
     @Column(name="name")
@@ -48,6 +51,11 @@ public class Calendar {
         }
     }
 
+    public Calendar(String name) {
+        this.name = name; 
+        this.events = new ArrayList<CalendarEvent>();
+    }
+    
     public List<CalendarEvent> findEventsWithinTime(LocalDateTime referenceDate, Duration duration) {
         if (events.size() == 0) {
             return null;
@@ -73,12 +81,12 @@ public class Calendar {
     }
 
     public static Calendar[] initCalendars(){
-        Calendar myCalendar = new Calendar((long) 1, new ArrayList<>(), "My Calendar");
+        Calendar myCalendar = new Calendar("My Calendar");
 
         // Adding some events to the calendar
-        myCalendar.add(new CalendarEvent(1L, "Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1"));
-        myCalendar.add(new CalendarEvent(2L, "Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
-        myCalendar.add(new CalendarEvent(3L, "Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
+        myCalendar.add(new CalendarEvent("Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1"));
+        myCalendar.add(new CalendarEvent("Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
+        myCalendar.add(new CalendarEvent("Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
 
         Calendar[] returnable = {myCalendar};
 
@@ -89,9 +97,9 @@ public class Calendar {
         Calendar myCalendar = new Calendar((long) 1, new ArrayList<>(), "My Calendar");
 
         // Adding some events to the calendar
-        myCalendar.add(new CalendarEvent(1L, "Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1"));
-        myCalendar.add(new CalendarEvent(2L, "Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
-        myCalendar.add(new CalendarEvent(3L, "Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
+        myCalendar.add(new CalendarEvent("Meeting", LocalDateTime.of(2024, 4, 28, 10, 0), LocalDateTime.of(2024, 4, 28, 12, 0), "Conference Room 1"));
+        myCalendar.add(new CalendarEvent( "Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
+        myCalendar.add(new CalendarEvent("Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
 
         // Finding events within a specific time range
         LocalDateTime referenceDate = LocalDateTime.of(2024, 4, 28, 9, 0);

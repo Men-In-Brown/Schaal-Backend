@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 // @SpringBootApplication annotation is the key to building web applications with Java https://spring.io/projects/spring-boot
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 public class Main {
 
     // Starts a spring application as a stand-alone application from the main method

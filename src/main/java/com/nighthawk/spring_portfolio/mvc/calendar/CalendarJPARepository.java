@@ -6,13 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CalendarJPARepository extends JpaRepository<Calendar, Long>{
     
-
-    @Override
     List<Calendar> findAll();
-
     List<Calendar> findByName(String name);
 
-    
 
 
 }
