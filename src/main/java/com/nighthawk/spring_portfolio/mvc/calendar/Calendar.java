@@ -35,7 +35,7 @@ public class Calendar {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "calendar", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "calendar", fetch = FetchType.EAGER)
     @Column(name = "events")
     private List<CalendarEvent> events; 
 
