@@ -3,8 +3,11 @@ package com.nighthawk.spring_portfolio.mvc.person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +29,7 @@ public class PersonRole {
         PersonRole student = new PersonRole("ROLE_STUDENT");
         PersonRole teacher = new PersonRole("ROLE_TEACHER");
         PersonRole admin = new PersonRole("ROLE_ADMIN");
-    
+
         PersonRole[] initArray = {student, teacher, admin};
         return initArray;
     }

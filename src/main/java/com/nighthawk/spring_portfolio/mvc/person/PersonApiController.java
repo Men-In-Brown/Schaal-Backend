@@ -1,15 +1,20 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.ManyToOne;
-
-import java.util.*;
+import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/person")
@@ -17,10 +22,6 @@ public class PersonApiController {
 
     @Autowired
     private PersonJpaRepository repository;
-
-    @Autowired
-    private PersonDetailsService personDetailsService;
-
 
     @GetMapping("/")
     public ResponseEntity<List<Person>> getPeople() {
@@ -30,52 +31,58 @@ public class PersonApiController {
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPerson(@PathVariable long id) {
         Optional<Person> optional = repository.findById(id);
-        if (optional.isPresent()) {  
-            Person person = optional.get();  
-            return new ResponseEntity<>(person, HttpStatus.OK);  
+        if (optional.isPresent()) {
+            Person person = optional.get();
+            return new ResponseEntity<>(person, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);       
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @ManyToOne
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Person> deletePerson(@PathVariable long id) {
         Optional<Person> optional = repository.findById(id);
-        if (optional.isPresent()) {  
-            Person person = optional.get();  
-            repository.deleteById(id);  
-            return new ResponseEntity<>(person, HttpStatus.OK);  
+        if (optional.isPresent()) {
+            Person person = optional.get();
+            repository.deleteById(id);
+            return new ResponseEntity<>(person, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping( "/post")
-    public ResponseEntity<Object> postPerson(@CookieValue("jwt") String jwtToken,
-                                             @RequestParam("email") String email,
-                                             @RequestParam("password") String password,
-                                             @RequestParam("name") String name,
-                                             @RequestParam("dob") String dobString
-                                             ) {
-        Date dob;
-        if (jwtToken.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping("/post")
+    public ResponseEntity<Object> postPerson(@RequestParam("email") String email,
+                                            @RequestParam("password") String password,
+                                            @RequestParam("name") String name,
+                                            @RequestParam("dob") String dobString) {
+        Date dob = null; // Initialize dob to null
+
         try {
             dob = new SimpleDateFormat("MM-dd-yyyy").parse(dobString);
-        } catch (Exception e) {
-            return new ResponseEntity<>(dobString +" error; try MM-dd-yyyy", HttpStatus.BAD_REQUEST);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
         }
+
+        // Check if dob is still null after the try-catch block
+        if (dob == null) {
+            return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
+        }
+
+        // Create and save Person entity
         Person person = new Person(email, password, name, dob);
-        personDetailsService.save(person);
-        return new ResponseEntity<>(email +" is created successfully", HttpStatus.CREATED);
+        repository.save(person);
+
+        return new ResponseEntity<>(email + " is created successfully", HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> personSearch(@RequestBody final Map<String,String> map) {
-        String term = (String) map.get("term");
+
+
+    @PostMapping("/search")
+    public ResponseEntity<Object> personSearch(@RequestBody final String term) {
         List<Person> list = repository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(term, term);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
     @PostMapping(value = "/setStats", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> personStats(@RequestBody final Map<String,Object> stat_map) {
         // find ID
