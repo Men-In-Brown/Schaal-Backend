@@ -93,24 +93,10 @@ public class Grade {
         Grade p4 = new Grade();
         p4.setEmail("toby@gmail.com");
         p4.setName("test");
-        p4.setAssignment("Assignment3");
+        p4.setAssignment("test");
         p4.setMaxPoints(2.00);
         p4.setScore(2.00);
-
-        Grade p5 = new Grade();
-        p5.setEmail("toby@gmail.com");
-        p5.setName("test");
-        p5.setAssignment("Assignment1");
-        p5.setMaxPoints(1.00);
-        p5.setScore(1.00);
-
-        Grade p6 = new Grade();
-        p6.setEmail("toby@gmail.com");
-        p6.setName("test");
-        p6.setAssignment("Assignment2");
-        p6.setMaxPoints(1.00);
-        p6.setScore(1.00);
-        Grade student_grade[] = {p1, p2, p3, p4,p5,p6};
+        Grade student_grade[] = {p1, p2, p3, p4};
         return(student_grade);
     }
     public static void main(String[] args) {

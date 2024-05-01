@@ -5,14 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.junit.experimental.theories.internal.Assignments;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.nighthawk.spring_portfolio.mvc.assignment.Assignment;
-import com.nighthawk.spring_portfolio.mvc.assignment.AssignmentJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.grade.Grade;
-import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
-
+import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
+import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
@@ -26,8 +22,7 @@ import java.util.List;
 @Component
 @Configuration // Scans Application for ModelInit Bean, this detects CommandLineRunner
 public class ModelInit {  
-    @Autowired AssignmentJpaRepository assignmentRepo;
-    @Autowired GradeJpaRepository gradeRepo;
+    @Autowired JokesJpaRepository jokesRepo;
     @Autowired NoteJpaRepository noteRepo;
     @Autowired PersonRoleJpaRepository roleJpaRepository;
     @Autowired PersonDetailsService personDetailsService;
@@ -38,12 +33,12 @@ public class ModelInit {
         return args -> {
 
             // Joke database is populated with starting jokes
-            /* String[] jokesArray = Assignments.init();
+            String[] jokesArray = Jokes.init();
             for (String joke : jokesArray) {
-                List<Assigment>jokeFound = jokesRepo.findByJokeIgnoreCase(joke);  // JPA lookup
+                List<Jokes> jokeFound = jokesRepo.findByJokeIgnoreCase(joke);  // JPA lookup
                 if (jokeFound.size() == 0)
-                    jokesRepo.save(new Assigment(null, joke, 0, 0)); //JPA save
-            } */
+                    jokesRepo.save(new Jokes(null, joke, 0, 0)); //JPA save
+            }
 
             // Person database is populated with starting people
             Person[] personArray = Person.init();
@@ -73,28 +68,8 @@ public class ModelInit {
                     // Add a "test note" for each new person
                     String text = "Test " + person.getEmail();
                     Note n = new Note(text, person);  // constructor uses new person as Many-to-One association
-                    noteRepo.save(n);  // JPA Save  
-		            //personService.addRoleToPerson(person.getEmail(), "ROLE_STUDENT");                
+                    noteRepo.save(n);  // JPA Save                  
                 }
-            }
-	    // for lesson demonstration: giving admin role to Mortensen
-            //personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
-
-            //delete all entries from grade database
-            gradeRepo.deleteAll();
-            Grade[] gradeArray = Grade.init();
-            for (Grade score : gradeArray) {
-                //List<Grade> test = gradeRepo.list(score.getName());  // lookup
-                //if (test.size() == 0) {
-                    gradeRepo.save(score);
-                //};
-            }
-
-            //delete all entries from grade database
-            assignmentRepo.deleteAll();
-            Assignment[] assignmentArray = Assignment.init();
-            for (Assignment score : assignmentArray) {
-                assignmentRepo.save(score);
             }
 
         };
