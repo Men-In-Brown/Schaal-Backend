@@ -47,11 +47,22 @@ public class AssignmentApiController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
-    public ResponseEntity<Assignment> getById(@PathVariable Long id) {
-        Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
-        
-        return assignmentOptional.map(assignment -> new ResponseEntity<>(assignment, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Object> getById(@PathVariable Long id) {
+        List<Object> combined = new ArrayList<>();
+        combined.addAll(assignmentRepository.findAll());
+        combined.addAll(quizRepository.findAll());
+        for(Object object : combined) {
+            if(object.getClass() == Assignment.class) {
+                if(((Assignment)object).getJointId() == id) {
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                }
+            } else if(object.getClass() == Quiz.class) {
+                if(((Quiz)object).getJointId() == id) {
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>("Bad ID", HttpStatus.BAD_REQUEST);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
