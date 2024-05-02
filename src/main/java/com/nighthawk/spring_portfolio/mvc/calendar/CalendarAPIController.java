@@ -42,17 +42,16 @@ public class CalendarAPIController {
         System.out.println(returnable);
         return new ResponseEntity<List<Calendar>>(returnable, HttpStatus.OK);
     }
-    // @GetMapping("/getEventsFrom/")
-    // public ResponseEntity<Calendar> getWithinTime(@RequestParam String name, @RequestParam int duration) {
-    //     Calendar c = repository.findByName(name);
-    //     Calendar returnable = new Calendar("c.getName()");
-    //     returnable.setId(c.getId());
-    //     for(CalendarEvent event : c.findEventsWithinTime(LocalDateTime.now(), Duration.ofHours((long) duration))){
-    //         returnable.add(new CalendarEvent(event.getName(), event.getStartDate(), event.getEndDate(), event.getLocation()));
-    //     }
 
-    //     return new ResponseEntity<Calendar>(returnable, HttpStatus.OK);
-    // }
+    @GetMapping("/getEventsFrom")
+    public ResponseEntity<List<CalendarEvent>> getWithinTime(@RequestParam int id, @RequestParam int duration) {
+        Calendar c = repository.findByCalendarId(id);
+        
+        List<CalendarEvent> returnable = c.findEventsWithinTime(LocalDateTime.now(),Duration.ofHours(duration));
+
+        return new ResponseEntity<List<CalendarEvent>>(returnable, HttpStatus.OK);
+    }
+
     @GetMapping("/events")
     public ResponseEntity<List<CalendarEvent>> getAllEvents() {
         return new ResponseEntity<List<CalendarEvent>>(eventRepo.findAll(), HttpStatus.OK);
