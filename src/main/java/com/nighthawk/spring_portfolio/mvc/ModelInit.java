@@ -70,14 +70,12 @@ public class ModelInit {
                     patRepo.save(l);
                 }
             }
-            System.out.println("helo");
             Calendar[] clist = Calendar.initCalendars();
             for(Calendar c : clist){
                 List<Calendar> found = calendarRepo.findByName(c.getName());
                 if (found.size() == 0){
                     for(CalendarEvent event : c.getEvents()){
                         if(event.getCalendar() == null){
-                            System.out.println("Yes!");
                             calendarRepo.save(c);
                             event.setCalendar(c);
                         }

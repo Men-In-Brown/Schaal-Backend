@@ -71,6 +71,11 @@ public class CalendarEvent implements Serializable, Comparable<CalendarEvent>{
        }
     }
     
+    public CalendarEvent giveAPI(){
+        return new CalendarEvent(this.id, this.name, this.startDate, this.endDate, this.location, null);
+    }
+    
+
     @Override
     public String toString(){
         return name;

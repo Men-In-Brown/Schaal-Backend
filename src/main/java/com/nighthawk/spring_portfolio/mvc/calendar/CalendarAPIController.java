@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,11 @@ public class CalendarAPIController {
     }
 
     @GetMapping("/getEventsFrom")
-    public ResponseEntity<List<CalendarEvent>> getWithinTime(@RequestParam int id, @RequestParam int duration) {
+    public ResponseEntity<List<CalendarEvent>> getWithinTime(@RequestParam int id, @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, @RequestParam int duration) {
+        System.out.println(id);
         Calendar c = repository.findByCalendarId(id);
-        
-        List<CalendarEvent> returnable = c.findEventsWithinTime(LocalDateTime.now(),Duration.ofHours(duration));
+        System.out.println(c);
+        List<CalendarEvent> returnable = c.findEventsWithinTime(startDate,Duration.ofHours(duration));
 
         return new ResponseEntity<List<CalendarEvent>>(returnable, HttpStatus.OK);
     }

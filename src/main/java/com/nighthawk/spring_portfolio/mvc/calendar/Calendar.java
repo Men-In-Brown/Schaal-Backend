@@ -60,7 +60,7 @@ public class Calendar {
         if (events.size() == 0) {
             return null;
         }
-
+        System.out.println(this.getEvents());
         // Calculate the end time based on the reference date and duration
         LocalDateTime endDate = referenceDate.plus(duration);
         List<CalendarEvent> valid = new ArrayList<CalendarEvent>();
@@ -70,10 +70,10 @@ public class Calendar {
         System.out.println("------");
         // Traverse the linked list to find the first event that starts after or at the end time
         for (CalendarEvent c : events){
+            System.out.println(c.getStartDate().isAfter(referenceDate) && c.getEndDate().isBefore(endDate));
             if(c.getStartDate().isAfter(referenceDate) && (c.getEndDate().isBefore(endDate) || c.getEndDate().isEqual(endDate))){
-                System.out.println(c.getStartDate());
-                System.out.println(c.getEndDate());
-                valid.add(c);
+                System.out.println(c);
+                valid.add(c.giveAPI());
             }
         }
 
@@ -88,7 +88,13 @@ public class Calendar {
         myCalendar.add(new CalendarEvent("Presentation", LocalDateTime.of(2024, 4, 28, 13, 0), LocalDateTime.of(2024, 4, 28, 15, 0), "Main Auditorium"));
         myCalendar.add(new CalendarEvent("Lunch", LocalDateTime.of(2024, 4, 28, 12, 0), LocalDateTime.of(2024, 4, 28, 13, 0), "Cafeteria"));
 
-        Calendar[] returnable = {myCalendar};
+        Calendar c2 = new Calendar("Haseeb's Calendar");
+
+        c2.add(new CalendarEvent("CSA", LocalDateTime.of(2024, 5, 2, 18, 0), LocalDateTime.of(2024, 5, 2, 20, 0), "Conference Room 1"));
+        c2.add(new CalendarEvent("APEL", LocalDateTime.of(2024, 5, 3, 13, 0), LocalDateTime.of(2024, 5, 12, 15, 0), "Main Auditorium"));
+        c2.add(new CalendarEvent("Paaras", LocalDateTime.of(2024, 5, 28, 19, 0), LocalDateTime.of(2024, 5, 12, 13, 0), "Cafeteria"));
+
+        Calendar[] returnable = {myCalendar, c2};
 
         return returnable;
     }
