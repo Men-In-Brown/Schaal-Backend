@@ -62,8 +62,6 @@ public class Assignment {
         this.jointId = jointId;
         //this.id = id;
     }
-<<<<<<< Updated upstream
-=======
     // by SK
     
     public static Assignment[] init() {
@@ -85,5 +83,4 @@ public class Assignment {
             System.out.println(test);  // print object
         }
     }
->>>>>>> Stashed changes
 }
