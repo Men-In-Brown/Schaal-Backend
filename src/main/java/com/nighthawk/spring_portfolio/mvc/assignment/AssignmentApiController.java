@@ -9,6 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +33,6 @@ public class AssignmentApiController {
 
     @Autowired
     private GradeJpaRepository gradeRepository;
-
 
     int idCount = 1; //Needed to prevent id overlap with quizzes and assignments
 
@@ -65,13 +67,30 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Bad ID", HttpStatus.BAD_REQUEST);
     }
 
+
+    /*@CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/{id}/username")
+    public ResponseEntity<String> getUsername(@PathVariable Long id) {
+        Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+        if (assignmentOptional.isPresent()) {
+            Assignment assignment = assignmentOptional.get();
+            Map<String, Map<String, Object>> submissions = assignment.getSubmissions();
+            if (submissions!= null &&!submissions.isEmpty()) {
+                String username = (String) submissions.values().iterator().next().get("username");
+                return new ResponseEntity<>(username, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }*/
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/post")
     public ResponseEntity<Object> postPerson(
     @RequestParam("title") String title,
     @RequestParam("desc") String desc,
     @RequestParam("link") String link,
-    @RequestParam("maxPoints") int maxPoints) {
+    @RequestParam("maxPoints") int maxPoints,
+    @RequestParam("due") String due) {
         if(title.length() < 3 || title.length() > 100) {
             return new ResponseEntity<>("Title is less than 3 or longer than 100 characters", HttpStatus.BAD_REQUEST);
         }
@@ -84,8 +103,15 @@ public class AssignmentApiController {
         if(maxPoints <= 0) {
             return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
         }
-        
-        assignmentRepository.save(new Assignment(title, desc, link, maxPoints, idCount));
+        LocalDateTime dueDateTime;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dueDateTime = LocalDateTime.parse(due, formatter);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Invalid due date format. Please provide the date in yyyy-MM-dd HH:mm:ss format.", HttpStatus.BAD_REQUEST);
+        }
+
+        assignmentRepository.save(new Assignment(title, desc, link, maxPoints, idCount, dueDateTime));
         idCount++;
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }
@@ -96,7 +122,8 @@ public class AssignmentApiController {
     @RequestParam("title") String title,
     @RequestParam("desc") String desc,
     @RequestParam("maxPoints") int maxPoints,
-    @RequestBody final Map<String,Object> questions) {
+    @RequestBody final Map<String,Object> questions,
+    @RequestParam("due") String due) {
         if(title.length() < 3 || title.length() > 100) {
             return new ResponseEntity<>("Title is less than 3 or longer than 100 characters", HttpStatus.BAD_REQUEST);
         }
@@ -106,7 +133,14 @@ public class AssignmentApiController {
         if(maxPoints <= 0) {
             return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
         }
-        
+        LocalDateTime dueDateTime;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dueDateTime = LocalDateTime.parse(due, formatter);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Invalid due date format. Please provide the date in yyyy-MM-dd HH:mm:ss format.", HttpStatus.BAD_REQUEST);
+        }
+
         //Check Questions
         // Extract Attributes from JSON
 
@@ -146,7 +180,7 @@ public class AssignmentApiController {
             questionNum++;
         }
         
-        quizRepository.save(new Quiz(title, desc, maxPoints, idCount, attributeMap));
+        quizRepository.save(new Quiz(title, desc, maxPoints, idCount, attributeMap, dueDateTime));
         idCount++;
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }
