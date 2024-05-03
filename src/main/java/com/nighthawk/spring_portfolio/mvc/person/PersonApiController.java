@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/person")
 public class PersonApiController {
 
