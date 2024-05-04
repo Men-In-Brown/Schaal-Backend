@@ -53,27 +53,38 @@ public class PersonApiController {
     public ResponseEntity<Object> postPerson(@RequestParam("email") String email,
                                             @RequestParam("password") String password,
                                             @RequestParam("name") String name,
-                                            @RequestParam("dob") String dobString) {
+                                            @RequestParam("dob") String dobString,
+                                            @RequestParam("role") String roleName) {
         Date dob = null; // Initialize dob to null
-
+    
         try {
             dob = new SimpleDateFormat("MM-dd-yyyy").parse(dobString);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
         }
-
+    
         // Check if dob is still null after the try-catch block
         if (dob == null) {
             return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
         }
-
+    
+        // Find or create the role
+        PersonRole role = repository.findByName(roleName);
+        if (role == null) {
+            // Role doesn't exist, create a new one
+            role = new PersonRole(roleName);
+            repository.save(role);
+        }
+    
         // Create and save Person entity
         Person person = new Person(email, password, name, dob);
+        person.getRoles().add(role); // Add the role to the person
         repository.save(person);
-
+    
         return new ResponseEntity<>(email + " is created successfully", HttpStatus.CREATED);
     }
+    
 
 
 

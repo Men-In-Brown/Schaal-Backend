@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface PersonJpaRepository extends JpaRepository<Person, Long> {
     Person findByEmail(String email);
+    PersonRole findByName(String name);
 
     List<Person> findAllByOrderByNameAsc();
 
@@ -18,4 +19,5 @@ public interface PersonJpaRepository extends JpaRepository<Person, Long> {
             value = "SELECT * FROM Person p WHERE p.name LIKE ?1 or p.email LIKE ?1",
             nativeQuery = true)
     List<Person> findByLikeTermNative(String term);
+    void save(PersonRole role);
 }
