@@ -50,15 +50,11 @@ public class PersonApiController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<Object> postPerson(@RequestParam("email") String email,
-                                            @RequestParam("password") String password,
-                                            @RequestParam("name") String name,
-                                            @RequestParam("dob") String dobString,
-                                            @RequestParam("role") String roleName) {
+    public ResponseEntity<Object> postPerson(@RequestBody PersonRequest request) {
         Date dob = null; // Initialize dob to null
     
         try {
-            dob = new SimpleDateFormat("MM-dd-yyyy").parse(dobString);
+            dob = new SimpleDateFormat("MM-dd-yyyy").parse(request.getDob());
         } catch (java.text.ParseException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
@@ -70,23 +66,20 @@ public class PersonApiController {
         }
     
         // Find or create the role
-        PersonRole role = repository.findByName(roleName);
+        PersonRole role = repository.findByName(request.getRole());
         if (role == null) {
             // Role doesn't exist, create a new one
-            role = new PersonRole(roleName);
+            role = new PersonRole(request.getRole());
             repository.save(role);
         }
     
         // Create and save Person entity
-        Person person = new Person(email, password, name, dob);
+        Person person = new Person(request.getEmail(), request.getPassword(), request.getName(), dob);
         person.getRoles().add(role); // Add the role to the person
         repository.save(person);
     
-        return new ResponseEntity<>(email + " is created successfully", HttpStatus.CREATED);
-    }
-    
-
-
+        return new ResponseEntity<>(request.getEmail() + " is created successfully", HttpStatus.CREATED);
+    }    
 
     @PostMapping("/search")
     public ResponseEntity<Object> personSearch(@RequestBody final String term) {
