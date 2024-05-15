@@ -13,8 +13,9 @@ public class AttendanceApiController {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
-    @GetMapping
+    @GetMapping({"/",""})
     public List<Attendance> getAllAttendance() {
+        
         return attendanceRepository.findAll();
     }
 

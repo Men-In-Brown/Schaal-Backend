@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		Optional<String> jwtToken = getJwtTokenFromCookies(request.getCookies());
 	
 		if (!jwtToken.isPresent()) {
-			logger.warn("No JWT cookie");
+			logger.info("No JWT cookie");
 			chain.doFilter(request, response);
 			return;
 		}
@@ -85,7 +85,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	 */
 	private Optional<String> getJwtTokenFromCookies(Cookie[] cookies) {
 		if (cookies == null || cookies.length == 0) {
-			logger.warn("No cookies");
+			logger.info("No cookies");
 			return Optional.empty();
 		}
 	

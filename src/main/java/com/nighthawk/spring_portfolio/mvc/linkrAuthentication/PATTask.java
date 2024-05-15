@@ -20,7 +20,7 @@ public class PATTask {
             p.setPAT(generateUniqueToken(6));
             PATRepo.save(p);
         }
-        System.out.println("executed");
+        //System.out.println("executed");
     }
 
     public String generateUniqueToken(int length) {
