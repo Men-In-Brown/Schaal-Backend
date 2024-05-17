@@ -13,7 +13,7 @@ public class HallPassApiController {
     @Autowired
     private HallPassJpaRepository hallPassJpaRepository;
 
-    @GetMapping("/")
+    @GetMapping
     public List<HallPass> getAllHallPasses() {
         return hallPassJpaRepository.findAll();
     }
@@ -24,7 +24,7 @@ public class HallPassApiController {
         return hallPass.orElse(null);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public HallPass createHallPass(@RequestBody HallPass hallPass) {
         return hallPassJpaRepository.save(hallPass);
     }

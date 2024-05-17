@@ -35,7 +35,7 @@ public class LinkrJwtRequestFilter extends OncePerRequestFilter {
 
 		// Attempt to extract JWT token from cookies
 		if ((cookies == null) || (cookies.length == 0)) {
-			logger.warn("No cookies");
+			logger.info("No cookies");
 		} else {
 			for (Cookie cookie: cookies) {
 				if (cookie.getName().equals("jwt")) {
