@@ -88,7 +88,7 @@ public class SecurityConfig {
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Headers", "Content-Type", "Authorization", "x-csrf-token"))
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-MaxAge", "600"))
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Methods", "POST", "GET", "OPTIONS", "HEAD"))
-					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "https://men-in-brown.github.io", "http://localhost:4100", "http://127.0.0.1:4100"))
+					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "https://men-in-brown.github.io", "http://127.0.0.1:4100"))
 				)
 				.formLogin(form -> form 
 					.loginPage("/login")
