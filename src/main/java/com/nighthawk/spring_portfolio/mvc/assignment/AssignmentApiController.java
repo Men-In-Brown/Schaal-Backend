@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // annotation to simplify the creation of RESTful web services
 @RequestMapping("/api/assignments")  // all requests in file begin with this URI
 public class AssignmentApiController {
@@ -34,7 +33,6 @@ public class AssignmentApiController {
 
     int idCount = 1; //Needed to prevent id overlap with quizzes and assignments
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/")
     public ResponseEntity<List<Object>> getRepositories() {
         List<Object> combined = new ArrayList<>();
@@ -45,7 +43,6 @@ public class AssignmentApiController {
 
     
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable Long id) {
         Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
@@ -54,7 +51,6 @@ public class AssignmentApiController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}/username")
     public ResponseEntity<String> getUsername(@PathVariable Long id) {
         Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
@@ -70,7 +66,6 @@ public class AssignmentApiController {
     }
 
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/post")
     public ResponseEntity<Object> postPerson(
     @RequestParam("title") String title,
@@ -95,7 +90,6 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/postQuiz")
     public ResponseEntity<Object> postQuiz(
     @RequestParam("title") String title,
