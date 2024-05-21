@@ -1,15 +1,14 @@
 package com.nighthawk.spring_portfolio.mvc.betterhallpasscopy;
 
-import com.nighthawk.spring_portfolio.mvc.person.Student;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +17,5 @@ public class HallPassEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private Student student;
+    private String studentId;
 }
