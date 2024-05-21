@@ -2,32 +2,44 @@ package com.nighthawk.spring_portfolio.mvc.linkrAuthentication;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.nighthawk.spring_portfolio.mvc.person.Person;
+import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
+import com.nighthawk.spring_portfolio.mvc.person.PersonJpaRepository;
+
 import groovy.transform.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Table
 public class LinkrPAT {
+
+    @Autowired
+    PersonDetailsService personJpaRepository;
 
     @Id
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation; 
     
+
     private String PAT;
-    private String user;
+
+    @OneToOne
+    private Person user;
 
     //private Employee attachedUser;
-
-    public LinkrPAT(String attachedUser){
+    public LinkrPAT(){}
+    public LinkrPAT(String email){
         this.creation = new Date();
         this.PAT = "Hello";
-        this.user = attachedUser;
+        this.user = personJpaRepository.getByEmail(email);
     }
 
     public void setPAT(String _PAT){
@@ -38,7 +50,7 @@ public class LinkrPAT {
         return this.PAT;
     }
 
-    public String getUser(){
+    public Person getUser(){
         return this.user;
     }
 
@@ -47,9 +59,9 @@ public class LinkrPAT {
     }
     
     public static LinkrPAT[] init(){
-        LinkrPAT l1 = new LinkrPAT("Varalu");
-        LinkrPAT l2 = new LinkrPAT("Paaras");
-        LinkrPAT l3 = new LinkrPAT("Tanay");
+        LinkrPAT l1 = new LinkrPAT("spk@gmail.com");
+        LinkrPAT l2 = new LinkrPAT("mort@gmail.com");
+        LinkrPAT l3 = new LinkrPAT("spark@gmail.com");
         LinkrPAT[] list = {l1, l2, l3};
         return list;
     }

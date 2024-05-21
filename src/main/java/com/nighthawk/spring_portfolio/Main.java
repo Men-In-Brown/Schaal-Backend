@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 // @SpringBootApplication annotation is the key to building web applications with Java https://spring.io/projects/spring-boot
+// @EnableScheduling allows for scheduled tasks to occur
 @SpringBootApplication
 @EnableScheduling
 public class Main {
