@@ -28,10 +28,10 @@ public class PersonRole {
     public static PersonRole[] init() {
         PersonRole student = new PersonRole("ROLE_STUDENT");
         PersonRole teacher = new PersonRole("ROLE_TEACHER");
-        PersonRole employer = new PersonRole("ROLE_EMPLOYER");
+        PersonRole INTERN = new PersonRole("ROLE_INTERN");
         PersonRole admin = new PersonRole("ROLE_ADMIN");
 
-        PersonRole[] initArray = {student, teacher, admin, employer};
+        PersonRole[] initArray = {student, teacher, admin, INTERN};
         return initArray;
     }
 }
