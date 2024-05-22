@@ -7,7 +7,13 @@ import java.util.Map;
 
 import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +26,15 @@ public class Student extends Person {
 
     private int grade;
     private String interest;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "student_internships", joinColumns = @JoinColumn(name = "student_id"))
     private ArrayList<Internship> internships;
 
+    @ElementCollection
+    @CollectionTable(name = "student_classes", joinColumns = @JoinColumn(name = "student_id"))
+    @MapKeyColumn(name = "class_key")
+    @Column(name = "class_value")
     private Map<String, String> classes;
 
     public Student(String email, String password, String name, Date dob, int grade, String interest) {
