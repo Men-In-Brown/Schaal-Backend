@@ -1,6 +1,8 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
 import java.util.Date;
+
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,19 +10,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employer extends Person {
+@Entity
+public class Intern extends Person {
 
     private String companyName;
     private String industry;
 
-    public Employer(String email, String password, String name, Date dob, String companyName, String industry) {
+    public Intern(String email, String password, String name, Date dob, String companyName, String industry) {
         super(email, password, name, dob);
         this.companyName = companyName;
         this.industry = industry;
     }
 
-    public static Employer[] init() {
-        Employer e1 = new Employer();
+    public static Intern[] init() {
+        Intern e1 = new Intern();
         e1.setEmail("employer1@gmail.com");
         e1.setPassword("123employer");
         e1.setName("ABC Corporation");
@@ -28,7 +31,7 @@ public class Employer extends Person {
         e1.setCompanyName("ABC Corporation");
         e1.setIndustry("Technology");
 
-        Employer e2 = new Employer();
+        Intern e2 = new Intern();
         e2.setEmail("employer2@gmail.com");
         e2.setPassword("123employer");
         e2.setName("XYZ Enterprises");
@@ -36,7 +39,7 @@ public class Employer extends Person {
         e2.setCompanyName("XYZ Enterprises");
         e2.setIndustry("Finance");
 
-        return new Employer[]{e1, e2};
+        return new Intern[]{e1, e2};
     }
 
     @Override

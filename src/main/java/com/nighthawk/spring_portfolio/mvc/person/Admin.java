@@ -1,6 +1,8 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
 import java.util.Date;
+
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Admin extends Person {
 
     private String role;
@@ -23,14 +26,14 @@ public class Admin extends Person {
         a1.setPassword("123admin");
         a1.setName("Admin User");
         a1.setDob(new Date());
-        a1.setRole("System Administrator");
+        a1.setRole("ROLE_ADMIN");
 
         Admin a2 = new Admin();
         a2.setEmail("admin2@gmail.com");
         a2.setPassword("123admin");
         a2.setName("Super Admin");
         a2.setDob(new Date());
-        a2.setRole("Superuser");
+        a2.setRole("ROLE_ADMIN");
 
         return new Admin[]{a1, a2};
     }

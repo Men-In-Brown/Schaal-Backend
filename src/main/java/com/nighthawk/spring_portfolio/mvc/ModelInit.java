@@ -11,10 +11,14 @@ import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
 import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.person.Admin;
+import com.nighthawk.spring_portfolio.mvc.person.Intern;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.person.Student;
+import com.nighthawk.spring_portfolio.mvc.person.Teacher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +63,7 @@ public class ModelInit {
                         // Accumulate reference to role from database
                         updatedRoles.add(roleFound);
                     }
-                    // Update person with roles from role databasea
+                    // Update person with roles from role database
                     person.setRoles(updatedRoles); // Object reference is updated
 
                     // Save person to database
@@ -71,8 +75,86 @@ public class ModelInit {
                     noteRepo.save(n);  // JPA Save                  
                 }
             }
-
-        };
-    }
+            Admin[] adminArray = Admin.init();
+            for (Admin admin : adminArray) {
+                List<Person> adminFound = personDetailsService.list(admin.getName(), admin.getEmail());
+                if (adminFound.size() == 0) {
+                    List<PersonRole> updatedRoles = new ArrayList<>();
+                    for (PersonRole role : admin.getRoles()) {
+                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
+                        if (roleFound == null) {
+                            roleJpaRepository.save(role);
+                            roleFound = role;
+                    }
+                    updatedRoles.add(roleFound);
+                }
+                admin.setRoles(updatedRoles);
+                personDetailsService.save(admin);
+                String text = "Test " + admin.getEmail();
+                Note n = new Note(text, admin);
+                noteRepo.save(n);
+            }
+        }
+            Intern[] internArray = Intern.init();
+            for (Intern intern : internArray) {
+                List<Person> internFound = personDetailsService.list(intern.getName(), intern.getEmail());
+                if (internFound.size() == 0) {
+                    List<PersonRole> updatedRoles = new ArrayList<>();
+                    for (PersonRole role : intern.getRoles()) {
+                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
+                        if (roleFound == null) {
+                            roleJpaRepository.save(role);
+                            roleFound = role;
+                    }
+                    updatedRoles.add(roleFound);
+                }
+                intern.setRoles(updatedRoles);
+                personDetailsService.save(intern);
+                String text = "Test " + intern.getEmail();
+                Note n = new Note(text, intern);
+                noteRepo.save(n);
+            }
+        }
+            Student[] studentArray = Student.init();
+            for (Student student : studentArray) {
+                List<Person> studentFound = personDetailsService.list(student.getName(), student.getEmail());
+                if (studentFound.size() == 0) {
+                    List<PersonRole> updatedRoles = new ArrayList<>();
+                    for (PersonRole role : student.getRoles()) {
+                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
+                        if (roleFound == null) {
+                            roleJpaRepository.save(role);
+                            roleFound = role;
+                    }
+                    updatedRoles.add(roleFound);
+                }
+                student.setRoles(updatedRoles);
+                personDetailsService.save(student);
+                String text = "Test " + student.getEmail();
+                Note n = new Note(text, student);
+                noteRepo.save(n);
+            }
+        }
+            Teacher[] teacherArray = Teacher.init();
+            for (Teacher teacher : teacherArray) {
+                List<Person> teacherFound = personDetailsService.list(teacher.getName(), teacher.getEmail());
+                if (teacherFound.size() == 0) {
+                    List<PersonRole> updatedRoles = new ArrayList<>();
+                    for (PersonRole role : teacher.getRoles()) {
+                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
+                        if (roleFound == null) {
+                            roleJpaRepository.save(role);
+                            roleFound = role;
+                    }
+                    updatedRoles.add(roleFound);
+                }
+                teacher.setRoles(updatedRoles);
+                personDetailsService.save(teacher);
+                String text = "Test " + teacher.getEmail();
+                Note n = new Note(text, teacher);
+                noteRepo.save(n);
+            }
+        }
+    };
 }
-
+}
