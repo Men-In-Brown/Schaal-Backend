@@ -22,18 +22,26 @@ public class Admin extends Person {
 
     public static Admin[] init() {
         Admin a1 = new Admin();
-        a1.setEmail("admin1@gmail.com");
-        a1.setPassword("123admin");
-        a1.setName("Admin User");
+        a1.setEmail("tanaypatel327@gmail.com");
+        a1.setPassword("tanay123");
+        a1.setName("Tanay Patel");
         a1.setDob(new Date());
+<<<<<<< HEAD
         a1.setRole("ROLE_ADMIN");
+=======
+        a1.setRole("ADMIN");
+>>>>>>> refs/remotes/origin/Login-Dev
 
         Admin a2 = new Admin();
-        a2.setEmail("admin2@gmail.com");
-        a2.setPassword("123admin");
-        a2.setName("Super Admin");
+        a2.setEmail("varalu@gmail.com");
+        a2.setPassword("varalu123");
+        a2.setName("Varaprasad Nibhanupudi");
         a2.setDob(new Date());
+<<<<<<< HEAD
         a2.setRole("ROLE_ADMIN");
+=======
+        a2.setRole("ADMIN");
+>>>>>>> refs/remotes/origin/Login-Dev
 
         return new Admin[]{a1, a2};
     }
