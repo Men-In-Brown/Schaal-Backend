@@ -25,7 +25,6 @@ public class Internship {
     private Long id;
 
     private String name; // user
-    private String mission; // user
     private String location; // user
     private String industry; // user
     private int size; // automated
@@ -42,7 +41,6 @@ public class Internship {
     public Internship(String name, String mission, String location, String industry, String ceo){
         // Users Set
         this.name = name;
-        this.mission = mission;
         this.location = location;
         this.industry = industry;
 

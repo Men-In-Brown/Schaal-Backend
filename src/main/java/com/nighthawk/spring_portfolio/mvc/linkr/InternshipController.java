@@ -37,7 +37,7 @@ public class InternshipController {
 
     // Endpoint to get all companies
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<InternshipDTO>> getAllCompanies() {
         List<Internship> companies = com.nighthawk.spring_portfolio.mvc.linkr.InternshipService.getAllCompanies(); // Retrieve companies from the service
         List<InternshipDTO> internshipDTOs = companies.stream()
@@ -62,7 +62,7 @@ public class InternshipController {
 
     // Endpoint to add a new internship
     @PostMapping
-    @PostAuthorize("hasRole('ADMIN') or hasRole('EMPLOYER')")
+    // @PostAuthorize("hasRole('ADMIN') or hasRole('EMPLOYER')")
     public ResponseEntity<Internship> addinternship(@RequestBody Internship internship) {
         log.info("Attempting to add internship: {}", internship); // Log the attempt
         Internship addedinternship = InternshipService.createInternship(internship); // Create the internship
@@ -72,7 +72,7 @@ public class InternshipController {
 
     // Endpoint to delete a internship by its ID
     @DeleteMapping("/{internshipId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYER')")
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYER')")
     public ResponseEntity<Void> deleteinternship(@PathVariable Long internshipId) {
         System.out.println("Attempting to delete internship with ID: " + internshipId); // Log the attempt
         com.nighthawk.spring_portfolio.mvc.linkr.InternshipService.deleteInternship(internshipId); // Delete the internship
