@@ -57,7 +57,7 @@ public class JwtApiController {
 			.httpOnly(true)
 			.secure(true)
 			.path("/")
-			.maxAge(3600)
+			.maxAge(36000000)
 			.sameSite("None; Secure")
 			.build();
 

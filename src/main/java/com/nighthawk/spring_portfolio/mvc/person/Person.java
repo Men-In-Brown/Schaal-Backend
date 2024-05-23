@@ -38,7 +38,6 @@ import lombok.NonNull;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "dtype")
 @Convert(attributeName ="person", converter = JsonType.class)
 public class Person {
 
