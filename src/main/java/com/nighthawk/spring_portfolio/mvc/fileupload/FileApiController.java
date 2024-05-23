@@ -1,11 +1,8 @@
 package com.nighthawk.spring_portfolio.mvc.fileupload;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-// import org.springframework.core.io.UrlResource;
-// import org.springframework.core.io.Resource;
-// import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-// import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nighthawk.spring_portfolio.mvc.grade.Grade;
+import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
+
 import java.io.IOException;
-// import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-// import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,30 +28,25 @@ public class FileApiController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    // @GetMapping("/files/{name}")
-    // public ResponseEntity<List<String>> getFiles(@PathVariable("name") String name, @PathVariable("assignment") String assignment) {
-    //     try {
-    //         // Construct the directory path based on user name and assignment
-    //         Path userDir = Paths.get(uploadDir, name, assignment);
-    //         if (!Files.exists(userDir)) {
-    //             return ResponseEntity.notFound().build();
-    //         }
+    @Autowired
+    private FileJpaRepository repository;
 
-    //         // List all files in the directory
-    //         try (Stream<Path> paths = Files.list(userDir)) {
-    //             List<String> files = paths
-    //                     .map(path -> path.getFileName().toString())
-    //                     .collect(Collectors.toList());
-    //             return ResponseEntity.ok().body(files);
-    //         }
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Grade> getScore(@PathVariable long id) {
+    //     Optional<Grade> optional = repository.findById(id);
+    //     if (optional.isPresent()) {  // Good ID
+    //         Grade activity = optional.get();  // value from findByID
+    //         return new ResponseEntity<>(activity, HttpStatus.OK);  // OK HTTP response: status code, headers, and body
     //     }
+    //     // Bad ID
+    //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     // }
 
+
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("assignment") String assignment) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
+                                             @RequestParam("name") String name,
+                                             @RequestParam("assignment") String assignment) {
         try {
             // Ensure the base upload directory exists
             Path uploadPath = Paths.get(uploadDir);
@@ -90,6 +83,9 @@ public class FileApiController {
             System.out.println("Original file name: " + originalFileName);
             System.out.println("Base file name: " + baseFileName);
             System.out.println("Saved as: " + newFileName);
+
+            File upload = new File(newFileName, name, assignment, "./volumes/uploads/" + name + "/" + assignment); //, , maxPoints, score);
+            repository.save(upload);
 
             return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
         } catch (IOException e) {
