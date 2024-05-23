@@ -29,7 +29,7 @@ public class ChannelApiController {
         Long channelID = Long.parseLong(id);
         Optional<Channel> channel = ChannelJpaRepository.findById(channelID);
         channel.get().setName(newChannel.getName());
-        channel.get().setDesc(newChannel.getDesc());
+        channel.get().setRecipient(newChannel.getRecipient());
         ChannelJpaRepository.save(channel.get());
         return channel.get();
     }
@@ -37,12 +37,12 @@ public class ChannelApiController {
     @PostMapping("/channel")
     public Channel createChannel(@RequestBody Channel channel) {
         // Get the title and content from the request body
-        String desc = channel.getDesc();
+        String recipient = channel.getRecipient();
         String name = channel.getName();
         String creator = channel.getCreator();
         // Create a new Post object
         Channel newChannel = new Channel();
-        newChannel.setDesc(desc);
+        newChannel.setRecipient(recipient);
         newChannel.setName(name); // Set the title
         newChannel.setCreator(creator);
         // Set other fields as needed

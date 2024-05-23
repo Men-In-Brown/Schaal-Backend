@@ -17,7 +17,7 @@ public class Message {
     private String writer;
 
     private String time;
-    private String groupname;
+    private String receiver;
 
 
     public Long getId() {
@@ -52,12 +52,12 @@ public class Message {
         this.time = time; 
     }
 
-    public String getGroupName() { 
-        return groupname; 
+    public String getReceiver() { 
+        return receiver; 
     }
 
-    public void setGroupName(String groupname) { 
-        this.groupname = groupname; 
+    public void setReceiver(String receiver) { 
+        this.receiver = receiver; 
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Message {
                 Objects.equals(text, message.text) &&
                 Objects.equals(writer, message.writer) &&
                 Objects.equals(time, message.time) &&
-                Objects.equals(groupname, message.groupname);
+                Objects.equals(receiver, message.receiver);
     }
 
     public static Message[] init() {
@@ -78,13 +78,13 @@ public class Message {
         m1.setText("this is taking way tooo long");
         m1.setWriter("landoooc");
         m1.setTime("12:57");
-        m1.setGroupName("1");
+        m1.setReceiver("1");
 
         Message m2 = new Message();
         m2.setText("INDICATORS!!!");
         m2.setWriter("mr_mort");
         m2.setTime("01:10");
-        m2.setGroupName("1");
+        m2.setReceiver("1");
 
     Message messages[] = {m1, m2};
     return(messages);
@@ -101,6 +101,6 @@ public class Message {
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id, text, writer, time, groupname);
+        return Objects.hash(Id, text, writer, time, receiver);
     }
 }

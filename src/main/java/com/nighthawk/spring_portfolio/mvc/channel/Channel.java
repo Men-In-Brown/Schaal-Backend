@@ -13,7 +13,7 @@ public class Channel {
     @Column(name = "channel_id")
     private Long Id;
     private String name;
-    private String desc;
+    private String recipient;
     private String creator;
 
     public Long getId() {
@@ -32,12 +32,12 @@ public class Channel {
         this.name = name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getCreator() { 
@@ -55,7 +55,7 @@ public class Channel {
         Channel channel = (Channel) o;
         return Objects.equals(Id, channel.Id) &&
                 Objects.equals(name, channel.name) &&
-                Objects.equals(desc, channel.desc) &&
+                Objects.equals(recipient, channel.recipient) &&
                 Objects.equals(creator, channel.creator);
     }
 
@@ -63,12 +63,12 @@ public class Channel {
         // basics of class construction
         Channel c1 = new Channel();
         c1.setName("test channel");
-        c1.setDesc("bruh why");
+        c1.setRecipient("bruh why");
         c1.setCreator("landoooc");
 
         Channel c2 = new Channel();
         c2.setName("INDICATORS");
-        c2.setDesc("i luv indicators");
+        c2.setRecipient("i luv indicators");
         c2.setCreator("Mortenses");
 
     Channel channels[] = {c1, c2};
@@ -86,6 +86,6 @@ public class Channel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id, name, desc, creator);
+        return Objects.hash(Id, name, recipient, creator);
     }
 }
