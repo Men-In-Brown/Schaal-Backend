@@ -91,11 +91,11 @@ public class ModelInit {
             }
 
             //delete all entries from grade database
-            assignmentRepo.deleteAll();
+            /*assignmentRepo.deleteAll();
             Assignment[] assignmentArray = Assignment.init();
             for (Assignment score : assignmentArray) {
                 assignmentRepo.save(score);
-            }
+            }*/
 
         };
     }
