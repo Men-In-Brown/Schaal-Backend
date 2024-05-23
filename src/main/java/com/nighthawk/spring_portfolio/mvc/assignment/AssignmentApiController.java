@@ -9,6 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // annotation to simplify the creation of RESTful web services
 @RequestMapping("/api/assignments")  // all requests in file begin with this URI
 public class AssignmentApiController {
@@ -30,9 +34,9 @@ public class AssignmentApiController {
     @Autowired
     private GradeJpaRepository gradeRepository;
 
-
     int idCount = 1; //Needed to prevent id overlap with quizzes and assignments
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/")
     public ResponseEntity<List<Object>> getRepositories() {
         List<Object> combined = new ArrayList<>();
@@ -43,14 +47,76 @@ public class AssignmentApiController {
 
     
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
-    public ResponseEntity<Assignment> getById(@PathVariable Long id) {
-        Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
-        
-        return assignmentOptional.map(assignment -> new ResponseEntity<>(assignment, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Object> getById(@PathVariable Long id) {
+        List<Object> combined = new ArrayList<>();
+        combined.addAll(assignmentRepository.findAll());
+        combined.addAll(quizRepository.findAll());
+        for(Object object : combined) {
+            if(object.getClass() == Assignment.class) {
+                if(((Assignment)object).getJointId() == id) {
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                }
+            } else if(object.getClass() == Quiz.class) {
+                if(((Quiz)object).getJointId() == id) {
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>("Bad ID", HttpStatus.BAD_REQUEST);
     }
 
+
+    /*@CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/{id}/username")
+    public ResponseEntity<String> getUsername(@PathVariable Long id) {
+        Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+        if (assignmentOptional.isPresent()) {
+            Assignment assignment = assignmentOptional.get();
+            Map<String, Map<String, Object>> submissions = assignment.getSubmissions();
+            if (submissions!= null &&!submissions.isEmpty()) {
+                String username = (String) submissions.values().iterator().next().get("username");
+                return new ResponseEntity<>(username, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }*/
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/post")
+    public ResponseEntity<Object> postPerson(
+    @RequestParam("title") String title,
+    @RequestParam("desc") String desc,
+    @RequestParam("link") String link,
+    @RequestParam("maxPoints") int maxPoints,
+    @RequestParam("due") String due) {
+        if(title.length() < 3 || title.length() > 100) {
+            return new ResponseEntity<>("Title is less than 3 or longer than 100 characters", HttpStatus.BAD_REQUEST);
+        }
+        if(desc.length() < 3 || desc.length() > 50000) {
+            return new ResponseEntity<>("Desc is less than 3 or longer than 500000 characters", HttpStatus.BAD_REQUEST);
+        }
+        if(link.length() < 3 || link.length() > 400) {
+            return new ResponseEntity<>("Link is less than 3 or longer than 400 characters", HttpStatus.BAD_REQUEST);
+        }
+        if(maxPoints <= 0) {
+            return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
+        }
+        LocalDateTime dueDateTime;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dueDateTime = LocalDateTime.parse(due, formatter);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Invalid due date format. Please provide the date in yyyy-MM-dd HH:mm:ss format.", HttpStatus.BAD_REQUEST);
+        }
+
+        assignmentRepository.save(new Assignment(title, desc, link, maxPoints, idCount, dueDateTime));
+        idCount++;
+        return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
+    }
+    
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}/username")
     public ResponseEntity<String> getUsername(@PathVariable Long id) {
         Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
@@ -65,37 +131,14 @@ public class AssignmentApiController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
-    @PostMapping("/post")
-    public ResponseEntity<Object> postPerson(
-    @RequestParam("title") String title,
-    @RequestParam("desc") String desc,
-    @RequestParam("link") String link,
-    @RequestParam("maxPoints") int maxPoints) {
-        if(title.length() < 3 || title.length() > 100) {
-            return new ResponseEntity<>("Title is less than 3 or longer than 100 characters", HttpStatus.BAD_REQUEST);
-        }
-        if(desc.length() < 3 || desc.length() > 50000) {
-            return new ResponseEntity<>("Desc is less than 3 or longer than 500000 characters", HttpStatus.BAD_REQUEST);
-        }
-        if(link.length() < 3 || link.length() > 400) {
-            return new ResponseEntity<>("Link is less than 3 or longer than 400 characters", HttpStatus.BAD_REQUEST);
-        }
-        if(maxPoints <= 0) {
-            return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
-        }
-        
-        assignmentRepository.save(new Assignment(title, desc, link, maxPoints, idCount));
-        idCount++;
-        return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
-    }
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/postQuiz")
     public ResponseEntity<Object> postQuiz(
     @RequestParam("title") String title,
     @RequestParam("desc") String desc,
     @RequestParam("maxPoints") int maxPoints,
-    @RequestBody final Map<String,Object> questions) {
+    @RequestBody final Map<String,Object> questions,
+    @RequestParam("due") String due) {
         if(title.length() < 3 || title.length() > 100) {
             return new ResponseEntity<>("Title is less than 3 or longer than 100 characters", HttpStatus.BAD_REQUEST);
         }
@@ -105,7 +148,14 @@ public class AssignmentApiController {
         if(maxPoints <= 0) {
             return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
         }
-        
+        LocalDateTime dueDateTime;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dueDateTime = LocalDateTime.parse(due, formatter);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Invalid due date format. Please provide the date in yyyy-MM-dd HH:mm:ss format.", HttpStatus.BAD_REQUEST);
+        }
+
         //Check Questions
         // Extract Attributes from JSON
 
@@ -145,7 +195,7 @@ public class AssignmentApiController {
             questionNum++;
         }
         
-        quizRepository.save(new Quiz(title, desc, maxPoints, idCount, attributeMap));
+        quizRepository.save(new Quiz(title, desc, maxPoints, idCount, attributeMap, dueDateTime));
         idCount++;
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,9 @@ public class Quiz {
     @Column()
     private int jointId;
 
+    @Column()
+    private LocalDateTime due;
+
     /* HashMap is used to store JSON for daily "stats"
     "stats": {
         "2022-11-13": {
@@ -52,12 +56,13 @@ public class Quiz {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> questions = new HashMap<>(); 
 
-    public Quiz(String title, String desc, int maxPoints, int jointId, Map<String, Object> questions) {
+    public Quiz(String title, String desc, int maxPoints, int jointId, Map<String, Object> questions,  LocalDateTime due) {
         this.title = title;
         this.desc = desc;
         this.maxPoints = maxPoints;
         this.quiz = true;
         this.jointId = jointId;
         this.questions = questions;
+        this.due = due;
     }
 }
