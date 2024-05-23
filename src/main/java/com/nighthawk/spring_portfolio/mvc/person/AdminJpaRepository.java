@@ -16,8 +16,9 @@ public interface AdminJpaRepository extends JpaRepository<Admin, Long> {
     Admin findByEmailAndPassword(String email, String password);
 
     @Query(
-            value = "SELECT * FROM Person p WHERE p.name LIKE ?1 or p.email LIKE ?1",
+            value = "SELECT * FROM Admin p WHERE p.name LIKE ?1 or p.email LIKE ?1",
             nativeQuery = true)
     List<Admin> findByLikeTermNative(String term);
+    
     void save(PersonRole role);
 }

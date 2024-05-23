@@ -3,6 +3,7 @@ package com.nighthawk.spring_portfolio.mvc.person;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Admin")
 public class Admin extends Person {
 
     private String role;
