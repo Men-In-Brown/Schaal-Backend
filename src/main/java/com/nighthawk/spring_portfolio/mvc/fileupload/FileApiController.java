@@ -5,24 +5,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.nighthawk.spring_portfolio.mvc.grade.Grade;
-import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
+@RequestMapping("/api/fileupload/")
 public class FileApiController {
 
     @Value("${file.upload-dir}")
@@ -30,6 +26,11 @@ public class FileApiController {
 
     @Autowired
     private FileJpaRepository repository;
+
+    @GetMapping("/")
+    public ResponseEntity<List<File>> getFileName() {
+        return new ResponseEntity<>( repository.findAllByOrderByFileNameAsc(), HttpStatus.OK);
+    }
 
     // @GetMapping("/{id}")
     // public ResponseEntity<Grade> getScore(@PathVariable long id) {
@@ -41,7 +42,6 @@ public class FileApiController {
     //     // Bad ID
     //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     // }
-
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
@@ -84,7 +84,13 @@ public class FileApiController {
             System.out.println("Base file name: " + baseFileName);
             System.out.println("Saved as: " + newFileName);
 
-            File upload = new File(newFileName, name, assignment, "./volumes/uploads/" + name + "/" + assignment); //, , maxPoints, score);
+            String updatedName = name.replace(" ", "%20");
+            String updatedAssignment = assignment.replace(" ", "%20");
+            String updatedFileName = newFileName.replace(" ", "%20");
+
+            File upload = new File(newFileName, name, assignment, "/volumes/uploads/" + updatedName + "/" + updatedAssignment + "/" + updatedFileName);
+
+            // File upload = new File(newFileName, name, assignment, "./volumes/uploads/" + name + "/" + assignment + "/" + newFileName);
             repository.save(upload);
 
             return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
