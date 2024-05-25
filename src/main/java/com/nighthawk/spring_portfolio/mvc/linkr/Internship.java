@@ -24,43 +24,33 @@ public class Internship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // user
-    private String mission; // user
-    private String location; // user
-    private String industry; // user
-    private int size; // automated
-    private String description; // set to null, can be replaced
-    private String website; // set to null, can be replaced
-    private int foundedYear; // automated
-    private String ceo; // automated (student creating internship)
-    // private int investments;
+    private String name;
+    private String location;
+    private String industry;
+    private int size;
+    private String description;
+    private String website;
+    private int foundedYear;
+    private String ceo;
 
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> students = new HashSet<>();
 
-
-    public Internship(String name, String mission, String location, String industry, String ceo){
-        // Users Set
+    public Internship(String name, String location, String industry, String ceo) {
         this.name = name;
-        this.mission = mission;
         this.location = location;
         this.industry = industry;
-
-        // Automated Set
         this.foundedYear = Year.now().getValue();
         this.ceo = ceo;
         this.size = 0;
-        
-        // null Set
         this.description = null;
         this.website = null;
     }
 
-    public static Internship[] internshipInit(){
-        Internship c1 = new Internship("Name 1", "To Name", "California", "Tech", "None");
-        Internship c2 = new Internship("Name 2", "To not name", "India", "Hosptality", "Tanay");
-        Internship c3 = new Internship("Name 3", "That is the question", "Shanghai", "Tax Fraud", "Paaras");
-        Internship[] clist = {c1, c2, c3};
-        return clist;
+    public static Internship[] internshipInit() {
+        Internship c1 = new Internship("Name 1", "California", "Tech", "None");
+        Internship c2 = new Internship("Name 2", "India", "Hospitality", "Tanay");
+        Internship c3 = new Internship("Name 3", "Shanghai", "Tax Fraud", "Paaras");
+        return new Internship[]{c1, c2, c3};
     }
 }

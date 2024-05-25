@@ -8,41 +8,26 @@ import java.util.Optional;
 @Service
 public class InternshipService {
 
-    private static InternshipRepository InternshipRepository;
+    private final InternshipRepository internshipRepository;
 
     @Autowired
-    public InternshipService(InternshipRepository InternshipRepository) {
-        InternshipService.InternshipRepository = InternshipRepository;
+    public InternshipService(InternshipRepository internshipRepository) {
+        this.internshipRepository = internshipRepository;
     }
 
-    // Method to retrieve all companies
-    public static List<Internship> getAllCompanies() {
-        return InternshipRepository.findAll();
-    }    
-
-    // Method to retrieve a Internship by its ID
-    public Optional<Internship> getInternshipById(Long InternshipId) {
-        return InternshipRepository.findById(InternshipId);
+    public List<Internship> getAllInternships() {
+        return internshipRepository.findAll();
     }
 
-    // Method to create a new Internship
-    public Internship createInternship(Internship Internship) {
-        // If the Internship ID is not provided, generate a new ID
-        if(Internship.getId() == null){
-            Internship.setId(generateNextId());
-        }
-        return InternshipRepository.save(Internship); // Save the Internship and return it
+    public Optional<Internship> getInternshipById(Long internshipId) {
+        return internshipRepository.findById(internshipId);
     }
 
-    // Method to delete a Internship by its ID
-    public static void deleteInternship(Long InternshipId) {
-        InternshipRepository.deleteById(InternshipId);
+    public Internship createInternship(Internship internship) {
+        return internshipRepository.save(internship);
     }
 
-    // Method to generate the next ID for a new Internship
-    private Long generateNextId() {
-        // Generate the next ID by retrieving the maximum ID and incrementing it
-        // Note: This approach might not be secure in a concurrent environment and should be improved
-        return InternshipRepository.getMaxId() + 1; 
+    public void deleteInternship(Long internshipId) {
+        internshipRepository.deleteById(internshipId);
     }
 }
