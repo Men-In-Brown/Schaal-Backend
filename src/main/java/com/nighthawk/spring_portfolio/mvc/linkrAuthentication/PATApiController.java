@@ -15,6 +15,7 @@ public class PATApiController {
     private PatJpaRepository patJpaRepository;
 
     // Get all PATs
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
     public List<LinkrPAT> getAllPATs() {
         return patJpaRepository.findAll();
