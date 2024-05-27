@@ -23,11 +23,11 @@ public class LinkrPAT {
 
     @Id
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creation; 
+    public Date creation; 
     
-    private String PAT;
+    public String PAT;
 
-    private String user;
+    public String user;
 
     //private Employee attachedUser;
 
