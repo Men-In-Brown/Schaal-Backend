@@ -24,6 +24,9 @@ public class HallPass {
 
     @Column(name = "expiry_time")
     private LocalDateTime expiryTime;
+    
+    @Column(name = "status")
+    private String status;  // New field
 
     // Constructors, Getters, and Setters
 
@@ -35,6 +38,7 @@ public class HallPass {
         this.teacherId = teacherId;
         this.reason = reason;
         this.expiryTime = expiryTime;
+        this.status = "Pending";  // Default status
     }
 
     // Getters and Setters
@@ -77,5 +81,13 @@ public class HallPass {
 
     public void setExpiryTime(LocalDateTime expiryTime) {
         this.expiryTime = expiryTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

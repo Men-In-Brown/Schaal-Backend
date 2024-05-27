@@ -26,6 +26,7 @@ public class HallPassApiController {
 
     @PostMapping
     public HallPass createHallPass(@RequestBody HallPass hallPass) {
+        hallPass.setStatus("Pending");  // Set initial status to Pending
         return hallPassJpaRepository.save(hallPass);
     }
 
@@ -38,6 +39,7 @@ public class HallPassApiController {
             existingHallPass.setTeacherId(updatedHallPass.getTeacherId());
             existingHallPass.setReason(updatedHallPass.getReason());
             existingHallPass.setExpiryTime(updatedHallPass.getExpiryTime());
+            existingHallPass.setStatus(updatedHallPass.getStatus());  // Update status
             return hallPassJpaRepository.save(existingHallPass);
         }
         return null;
@@ -48,4 +50,16 @@ public class HallPassApiController {
         hallPassJpaRepository.deleteById(id);
         return "Deleted Hall Pass with ID: " + id;
     }
+
+    @PutMapping("/{id}/status")
+    public HallPass updateHallPassStatus(@PathVariable Long id, @RequestBody String status) {
+        Optional<HallPass> hallPass = hallPassJpaRepository.findById(id);
+        if (hallPass.isPresent()) {
+            HallPass existingHallPass = hallPass.get();
+            existingHallPass.setStatus(status);
+            return hallPassJpaRepository.save(existingHallPass);
+        }
+        return null;
+    }
 }
+
