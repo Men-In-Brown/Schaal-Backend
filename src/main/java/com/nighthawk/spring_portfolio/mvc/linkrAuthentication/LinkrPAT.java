@@ -2,7 +2,11 @@ package com.nighthawk.spring_portfolio.mvc.linkrAuthentication;
 
 import java.util.Date;
 
+import com.nighthawk.spring_portfolio.mvc.person.Person;
+import com.vladmihalcea.hibernate.type.json.JsonType;
+
 import groovy.transform.Generated;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -10,9 +14,11 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @NoArgsConstructor
 @Table
+@Convert(attributeName ="pat", converter = JsonType.class)
 public class LinkrPAT {
 
     @Id
@@ -20,11 +26,12 @@ public class LinkrPAT {
     private Date creation; 
     
     private String PAT;
-    private String user;
+
+    private Person user;
 
     //private Employee attachedUser;
 
-    public LinkrPAT(String attachedUser){
+    public LinkrPAT(Person attachedUser){
         this.creation = new Date();
         this.PAT = "Hello";
         this.user = attachedUser;
@@ -38,7 +45,7 @@ public class LinkrPAT {
         return this.PAT;
     }
 
-    public String getUser(){
+    public Person getUser(){
         return this.user;
     }
 
@@ -47,9 +54,9 @@ public class LinkrPAT {
     }
     
     public static LinkrPAT[] init(){
-        LinkrPAT l1 = new LinkrPAT("Varalu");
-        LinkrPAT l2 = new LinkrPAT("Paaras");
-        LinkrPAT l3 = new LinkrPAT("Tanay");
+        LinkrPAT l1 = new LinkrPAT(new Person());
+        LinkrPAT l2 = new LinkrPAT(new Person());
+        LinkrPAT l3 = new LinkrPAT(new Person());
         LinkrPAT[] list = {l1, l2, l3};
         return list;
     }
