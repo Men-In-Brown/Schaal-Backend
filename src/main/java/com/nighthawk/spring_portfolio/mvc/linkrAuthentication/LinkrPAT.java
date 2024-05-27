@@ -27,11 +27,11 @@ public class LinkrPAT {
     
     private String PAT;
 
-    private Person user;
+    private String user;
 
     //private Employee attachedUser;
 
-    public LinkrPAT(Person attachedUser){
+    public LinkrPAT(String attachedUser){
         this.creation = new Date();
         this.PAT = "Hello";
         this.user = attachedUser;
@@ -45,7 +45,7 @@ public class LinkrPAT {
         return this.PAT;
     }
 
-    public Person getUser(){
+    public String getUser(){
         return this.user;
     }
 
@@ -54,9 +54,9 @@ public class LinkrPAT {
     }
     
     public static LinkrPAT[] init(){
-        LinkrPAT l1 = new LinkrPAT(new Person());
-        LinkrPAT l2 = new LinkrPAT(new Person());
-        LinkrPAT l3 = new LinkrPAT(new Person());
+        LinkrPAT l1 = new LinkrPAT("spk@gmail.com");
+        LinkrPAT l2 = new LinkrPAT("mort@gmail.com");
+        LinkrPAT l3 = new LinkrPAT("spark@gmail.com");
         LinkrPAT[] list = {l1, l2, l3};
         return list;
     }

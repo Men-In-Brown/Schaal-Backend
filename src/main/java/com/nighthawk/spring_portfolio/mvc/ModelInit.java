@@ -13,6 +13,9 @@ import com.nighthawk.spring_portfolio.mvc.assignment.AssignmentJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.grade.Grade;
 import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
 
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.LinkrPAT;
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.PatJpaRepository;
+
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
@@ -31,6 +34,7 @@ public class ModelInit {
     @Autowired NoteJpaRepository noteRepo;
     @Autowired PersonRoleJpaRepository roleJpaRepository;
     @Autowired PersonDetailsService personDetailsService;
+    @Autowired PatJpaRepository patRepo;
 
     @Bean
     @Transactional
@@ -97,6 +101,15 @@ public class ModelInit {
                 assignmentRepo.save(score);
             }
 
+            LinkrPAT[] lst = LinkrPAT.init();
+            for(LinkrPAT l : lst){
+                List<LinkrPAT> found = patRepo.findAllByUser(l.getUser());
+                if(found.size() == 0){
+                    patRepo.save(l);
+                }
+            }
         };
+
+        
     }
 }
