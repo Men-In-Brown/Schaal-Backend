@@ -36,7 +36,7 @@ public class Assignment {
     private int maxPoints;
 
     @Column()
-    private boolean quiz;
+    private String type;
 
     @Column()
     private int jointId;
@@ -61,7 +61,7 @@ public class Assignment {
         this.desc = desc;
         this.link = link;
         this.maxPoints = maxPoints;
-        this.quiz = false;
+        this.type = "assignment";
         this.jointId = jointId;
         this.due = due;
         //this.id = id;
