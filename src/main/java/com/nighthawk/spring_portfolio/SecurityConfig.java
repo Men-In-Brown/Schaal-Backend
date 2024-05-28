@@ -83,7 +83,7 @@ public class SecurityConfig {
 				// support cors
 				.cors(Customizer.withDefaults())
 				.headers(headers -> headers
-					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "https://men-in-brown.github.io", "http://127.0.0.1:4000"))
+					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "https://men-in-brown.github.io"))
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Credentials", "true"))
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-ExposedHeaders", "*", "Authorization"))
 					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Headers", "Content-Type", "Authorization", "x-csrf-token"))
