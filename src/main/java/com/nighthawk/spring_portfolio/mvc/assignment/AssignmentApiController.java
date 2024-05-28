@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // annotation to simplify the creation of RESTful web services
 @RequestMapping("/api/assignments")  // all requests in file begin with this URI
 public class AssignmentApiController {
@@ -49,8 +48,6 @@ public class AssignmentApiController {
     }
 
     
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/post")
     public ResponseEntity<Object> postPerson(
     @RequestParam("title") String title,
@@ -83,7 +80,6 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/")
     public ResponseEntity<List<Object>> getRepositories() {
         List<Object> combined = new ArrayList<>();
@@ -117,7 +113,6 @@ public class AssignmentApiController {
         return toReturn;
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable Long id) {
         Object result = getByIdHelper(id.intValue());
@@ -127,7 +122,6 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Bad ID", HttpStatus.BAD_REQUEST);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}/username")
     public ResponseEntity<String> getUsername(@PathVariable Long id) {
         Object object = getByIdHelper(id.intValue());
@@ -144,7 +138,6 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Bad ID, must be an assignment", HttpStatus.BAD_REQUEST);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/postQuiz")
     public ResponseEntity<Object> postQuiz(
     @RequestParam("title") String title,
@@ -340,7 +333,6 @@ public ResponseEntity<Object> personStats(@RequestBody final Map<String, Object>
 
 
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @PostMapping("/postFlashcard")
 public ResponseEntity<Object> postFlashcard(
         @RequestParam("title") String title,
@@ -381,7 +373,7 @@ public ResponseEntity<Object> postFlashcard(
     return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
 }
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @GetMapping("/getReqFlashcards/{id}")
 public ResponseEntity<Object> getCompletedFlashcards(@PathVariable int id) {
     try {
@@ -392,7 +384,7 @@ public ResponseEntity<Object> getCompletedFlashcards(@PathVariable int id) {
     }
 }
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @PostMapping("/getCompletedFlashcards/{id}")
 public ResponseEntity<Object> getCompletedFlashcards(@PathVariable int id, @RequestParam("username") String username) {
     try {
@@ -403,7 +395,6 @@ public ResponseEntity<Object> getCompletedFlashcards(@PathVariable int id, @Requ
     }
 }
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @PostMapping("/completeFlashcard/{id}")
 public ResponseEntity<Object> completeFlashcard(@PathVariable int id, @RequestParam("username") String username) {
     try {
