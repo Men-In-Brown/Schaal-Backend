@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.nighthawk.spring_portfolio.mvc.admin.Admin;
+import com.nighthawk.spring_portfolio.mvc.intern.Intern;
 import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
 import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.person.Admin;
-import com.nighthawk.spring_portfolio.mvc.person.Intern;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.person.Student;
-import com.nighthawk.spring_portfolio.mvc.person.Teacher;
+import com.nighthawk.spring_portfolio.mvc.student.Student;
+import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,8 @@
-package com.nighthawk.spring_portfolio.mvc.person;
+package com.nighthawk.spring_portfolio.mvc.intern;
 
 import java.util.Date;
+
+import com.nighthawk.spring_portfolio.mvc.person.Person;
 
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;

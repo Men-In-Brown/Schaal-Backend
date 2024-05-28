@@ -1,4 +1,4 @@
-package com.nighthawk.spring_portfolio.mvc.person;
+package com.nighthawk.spring_portfolio.mvc.student;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
+import com.nighthawk.spring_portfolio.mvc.person.Person;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

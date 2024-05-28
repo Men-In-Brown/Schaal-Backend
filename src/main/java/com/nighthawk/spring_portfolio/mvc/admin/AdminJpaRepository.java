@@ -1,7 +1,9 @@
-package com.nighthawk.spring_portfolio.mvc.person;
+package com.nighthawk.spring_portfolio.mvc.admin;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 
 import java.util.List;
 
