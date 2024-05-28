@@ -65,7 +65,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Student ID</th>
-                    <th>Teacher ID</th>
+                    <!--<th>Teacher ID</th>-->
                     <th>Reason</th>
                     <th>Expiry Time</th>
                     <th>
@@ -113,10 +113,10 @@
             tableBody.innerHTML = '';
             hallPasses.forEach(hallPass => {
                 const row = document.createElement('tr');
+                //<td>${hallPass.teacherId}</td>
                 row.innerHTML = `
                     <td>${hallPass.id}</td>
                     <td>${hallPass.studentId}</td>
-                    <td>${hallPass.teacherId}</td>
                     <td>${hallPass.reason}</td>
                     <td>${new Date(hallPass.expiryTime).toLocaleString()}</td>
                     <td>${hallPass.status}</td>
