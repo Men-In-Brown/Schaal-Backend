@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 
+import com.nighthawk.hacks.InternshipSearcher;
 // Using lombok to automatically generate a logger
 @Slf4j
 @RestController
@@ -44,6 +45,16 @@ public class InternshipController {
                 .map(internship -> modelMapper.map(internship, InternshipDTO.class)) // Map entities to DTOs
                 .collect(Collectors.toList()); // Collect DTOs into a list
         return new ResponseEntity<>(internshipDTOs, HttpStatus.OK); // Return DTO list with OK status
+    }
+
+    @GetMapping("/{searchQuery}")
+    public ResponseEntity<List<InternshipDTO>> getSearchedInternships(@PathVariable String searchQuery) {
+        List<Internship> internships = com.nighthawk.spring_portfolio.mvc.linkr.InternshipService.getAllCompanies();
+        List<InternshipDTO> internshipDTOs = internships.stream()
+                .map(internship -> modelMapper.map(internship, InternshipDTO.class)) // Map entities to DTOs
+                .collect(Collectors.toList()); // Collect DTOs into a list
+        List<InternshipDTO> searched = InternshipSearcher.searchInternships(internshipDTOs, searchQuery);
+        return new ResponseEntity<>(searched, HttpStatus.OK);
     }
 
     // Endpoint to get a internship by its ID
