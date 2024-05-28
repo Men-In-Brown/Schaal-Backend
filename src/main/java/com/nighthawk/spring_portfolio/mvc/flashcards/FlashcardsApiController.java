@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nighthawk.spring_portfolio.mvc.grade.Grade;
-
 import java.util.List;
 
 @RestController
@@ -21,19 +19,26 @@ public class FlashcardsApiController {
         return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping( "/add")
-    public ResponseEntity<Object> postScore(@RequestParam("topic") String topic,
-                                            @RequestParam("question") String question,
-                                            @RequestParam("answer") String answer) {
-        // A person object WITHOUT ID will create a new record with default roles as student
-        Flashcards flashcards = new Flashcards(null, topic, question, answer);
-        repository.save(flashcards);
-        return new ResponseEntity<>(flashcards +" is created successfully", HttpStatus.CREATED);
-    }
+    // @PostMapping( "/add")
+    // public ResponseEntity<Object> postScore(@RequestParam("topic") String topic,
+    //                                         @RequestParam("question") String question,
+    //                                         @RequestParam("answer") String answer) {
+    //     // A person object WITHOUT ID will create a new record with default roles as student
+    //     Flashcards flashcards = new Flashcards(null, topic, question, answer);
+    //     repository.save(flashcards);
+    //     return new ResponseEntity<>(flashcards +" is created successfully", HttpStatus.CREATED);
+    // }
+
+    @PostMapping("/add")
+    public ResponseEntity<Object> postScore(@RequestBody Flashcards flashcard) {
+    repository.save(flashcard);
+    return new ResponseEntity<>(flashcard + " is created successfully", HttpStatus.CREATED);
+}
+
 
     @GetMapping("/topics")
     public ResponseEntity<List<String>> getTopics() {
-    List<String> topics = repository.findDistinctTopicBy(); // Fix the method name
+    List<String> topics = repository.findDistinctTopicsBy();
     return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
