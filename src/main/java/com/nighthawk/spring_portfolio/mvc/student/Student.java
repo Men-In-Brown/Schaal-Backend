@@ -1,29 +1,70 @@
 package com.nighthawk.spring_portfolio.mvc.student;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import static jakarta.persistence.FetchType.EAGER;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
-import com.nighthawk.spring_portfolio.mvc.person.Person;
+import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapKeyColumn;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Data
 @NoArgsConstructor // Lombok will generate the no-argument constructor
 @AllArgsConstructor
 @Entity
-public class Student extends Person {
+public class Student{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @NotEmpty
+    @Size(min=5)
+    @Column(unique=true)
+    @Email
+    private String email;
+
+    @NotEmpty
+    private String password;
+
+    @NonNull
+    @Size(min = 2, max = 30, message = "Name (2 to 30 chars)")
+    private String name;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
+
+    @ManyToMany(fetch = EAGER)
+    private Collection<PersonRole> roles = new ArrayList<>();
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String,Map<String, Object>> stats = new HashMap<>(); 
 
     private int grade;
     private String interest;
@@ -39,7 +80,10 @@ public class Student extends Person {
     private Map<String, String> classes = new HashMap<>(); // Initialize here
 
     public Student(String email, String password, String name, Date dob, int grade, String interest) {
-        super(email, password, name, dob);
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.dob = dob;
         this.grade = grade;
         this.interest = interest;
         this.classes = new HashMap<>(); 
@@ -79,7 +123,6 @@ public class Student extends Person {
         return new Student[]{s1, s2};
     }
 
-    @Override
     public int getAge() {
         if (getDob() != null) {
             long ageInMillis = new Date().getTime() - getDob().getTime();
