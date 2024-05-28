@@ -81,14 +81,14 @@ public class ModelInit {
             //personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
 
             //delete all entries from grade database
-            gradeRepo.deleteAll();
-            Grade[] gradeArray = Grade.init();
-            for (Grade score : gradeArray) {
-                //List<Grade> test = gradeRepo.list(score.getName());  // lookup
-                //if (test.size() == 0) {
-                    gradeRepo.save(score);
-                //};
-            }
+            // gradeRepo.deleteAll();
+            // Grade[] gradeArray = Grade.init();
+            // for (Grade score : gradeArray) {
+            //     //List<Grade> test = gradeRepo.list(score.getName());  // lookup
+            //     //if (test.size() == 0) {
+            //         gradeRepo.save(score);
+            //     //};
+            // }
 
             //delete all entries from grade database
             /*assignmentRepo.deleteAll();
