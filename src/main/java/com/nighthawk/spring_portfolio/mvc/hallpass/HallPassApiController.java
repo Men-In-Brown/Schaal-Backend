@@ -18,6 +18,29 @@ public class HallPassApiController {
         return hallPassJpaRepository.findAll();
     }
 
+    @GetMapping("/status/{status}")
+    public List<HallPass> getAllHallPassesByStatus(@PathVariable String status) {
+        return hallPassJpaRepository.findByStatus(status);
+    }
+
+    @GetMapping("/student/{studentId}")
+    public List<HallPass> getAllHallPassesForStudent(@PathVariable String studentId) {
+        return hallPassJpaRepository.findByStudentId(studentId);
+    }
+
+    @GetMapping("/teacher/{teacherId}")
+    public List<HallPass> getAllHallPassesForTeacher(@PathVariable String teacherId) {
+        return hallPassJpaRepository.findByTeacherId(teacherId);
+    }
+
+    @GetMapping("/teacher/{teacherId}/status/{status}")
+    public List<HallPass> getAllHallPassesForTeacherByStatus(@PathVariable String teacherId,@PathVariable String status) {
+        if (status.equalsIgnoreCase("All")){
+            return hallPassJpaRepository.findByTeacherId(teacherId);    
+        }
+        return hallPassJpaRepository.findByTeacherIdAndStatus(teacherId, status);
+    }
+
     @GetMapping("/{id}")
     public HallPass getHallPassById(@PathVariable Long id) {
         Optional<HallPass> hallPass = hallPassJpaRepository.findById(id);
@@ -45,8 +68,8 @@ public class HallPassApiController {
         return null;
     }
 
-    @PutMapping("/{id}/status")
-    public HallPass updateHallPassStatus(@PathVariable Long id, @RequestBody String status) {
+    @PutMapping("/{id}/{status}")
+    public HallPass updateHallPassStatus(@PathVariable Long id, @PathVariable String status) {
         Optional<HallPass> hallPass = hallPassJpaRepository.findById(id);
         if (hallPass.isPresent()) {
             HallPass existingHallPass = hallPass.get();

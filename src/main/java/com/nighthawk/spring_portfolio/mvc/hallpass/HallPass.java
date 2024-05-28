@@ -20,6 +20,7 @@ public class HallPass {
     @Column(name = "teacher_id")
     private String teacherId;
 
+    @Column(name = "reason")
     private String reason;
 
     @Column(name = "expiry_time")
