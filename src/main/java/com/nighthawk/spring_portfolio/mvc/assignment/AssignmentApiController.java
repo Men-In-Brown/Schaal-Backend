@@ -3,10 +3,13 @@ package com.nighthawk.spring_portfolio.mvc.assignment;
 import com.nighthawk.spring_portfolio.mvc.grade.Grade;
 import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.nighthawk.spring_portfolio.mvc.assignment.Flashcard;
 import com.nighthawk.spring_portfolio.mvc.assignment.FlashcardJpaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import java.util.Map;
+
 
 @RestController // annotation to simplify the creation of RESTful web services
 @RequestMapping("/api/assignments")  // all requests in file begin with this URI
@@ -48,6 +52,8 @@ public class AssignmentApiController {
     }
 
     
+
+
     @PostMapping("/post")
     public ResponseEntity<Object> postPerson(
     @RequestParam("title") String title,
@@ -80,8 +86,11 @@ public class AssignmentApiController {
         return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/")
-    public ResponseEntity<List<Object>> getRepositories() {
+    public ResponseEntity<List<Object>> getRepositories(HttpServletRequest request) {
+        String origin = request.getHeader(HttpHeaders.ORIGIN);
+        System.out.println(origin);
         List<Object> combined = new ArrayList<>();
         combined.addAll(assignmentRepository.findAll());
         combined.addAll(quizRepository.findAll());
@@ -113,6 +122,7 @@ public class AssignmentApiController {
         return toReturn;
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable Long id) {
         Object result = getByIdHelper(id.intValue());
@@ -121,6 +131,7 @@ public class AssignmentApiController {
         }
         return new ResponseEntity<>("Bad ID", HttpStatus.BAD_REQUEST);
     }
+
 
     @GetMapping("/{id}/username")
     public ResponseEntity<String> getUsername(@PathVariable Long id) {
@@ -137,6 +148,7 @@ public class AssignmentApiController {
 
         return new ResponseEntity<>("Bad ID, must be an assignment", HttpStatus.BAD_REQUEST);
     }
+
 
     @PostMapping("/postQuiz")
     public ResponseEntity<Object> postQuiz(
@@ -333,6 +345,7 @@ public ResponseEntity<Object> personStats(@RequestBody final Map<String, Object>
 
 
 
+
 @PostMapping("/postFlashcard")
 public ResponseEntity<Object> postFlashcard(
         @RequestParam("title") String title,
@@ -394,6 +407,7 @@ public ResponseEntity<Object> getCompletedFlashcards(@PathVariable int id, @Requ
         return new ResponseEntity<>("Username or flashcards not found", HttpStatus.NOT_FOUND);
     }
 }
+
 
 @PostMapping("/completeFlashcard/{id}")
 public ResponseEntity<Object> completeFlashcard(@PathVariable int id, @RequestParam("username") String username) {
