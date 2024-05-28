@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+    layout:decorate="~{layouts/base}" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LinkrPAT List</title>
+</head>
+
+<html>
+<body>
+    <th:block layout:fragment="body" th:remove="tag">
+      <!-- Start of body content specific to page -->
+      <div class="px-4 py-5 my-5">
+        <div class="container">
+            <h1 class="mt-5">List of LinkrPATs</h1>
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Creation Date</th>
+                        <th>PAT</th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pat : ${pats}">
+                        <td th:text="${#dates.format(pat.creation, 'yyyy-MM-dd HH:mm:ss')}">Creation Date</td>
+                        <td th:text="${pat.PAT}">PAT</td>
+                        <td th:text="${pat.user}">User</td> <!-- Assuming Person has a 'name' field -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      <!-- End of body content specific to page -->
+    </th:block>
+</body>
+</html>
+
+
