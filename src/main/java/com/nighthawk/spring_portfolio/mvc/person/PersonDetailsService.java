@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -56,9 +59,9 @@ public class PersonDetailsService implements UserDetailsService {
         return personJpaRepository.findByLikeTermNative(likeTerm);
     }
 
-    public void save(Person person) {
-        person.setPassword(passwordEncoder.encode(person.getPassword()));
-        personJpaRepository.save(person);
+    public void save(Teacher teacher) {
+        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
+        personJpaRepository.save(teacher);
     }
 
     public Person get(long id) {

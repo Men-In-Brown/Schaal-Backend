@@ -3,24 +3,34 @@ package com.nighthawk.spring_portfolio.mvc;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.nighthawk.spring_portfolio.mvc.admin.Admin;
-import com.nighthawk.spring_portfolio.mvc.intern.Intern;
 import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
 import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
+import com.nighthawk.spring_portfolio.mvc.linkr.InternshipRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.admin.Admin;
+import com.nighthawk.spring_portfolio.mvc.admin.AdminJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.intern.Intern;
+import com.nighthawk.spring_portfolio.mvc.intern.InternJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
+import com.nighthawk.spring_portfolio.mvc.person.PersonJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.student.Student;
+import com.nighthawk.spring_portfolio.mvc.student.StudentJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
+import com.nighthawk.spring_portfolio.mvc.teacher.TeacherJpaRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -30,6 +40,14 @@ public class ModelInit {
     @Autowired NoteJpaRepository noteRepo;
     @Autowired PersonRoleJpaRepository roleJpaRepository;
     @Autowired PersonDetailsService personDetailsService;
+    @Autowired PersonJpaRepository personJpaRepository;
+    @Autowired InternshipRepository internshipRepository;
+    @Autowired PasswordEncoder passwordEncoder;
+    @Autowired StudentJpaRepository studentJpaRepository;
+    @Autowired TeacherJpaRepository teacherJpaRepository;
+    @Autowired InternJpaRepository internJpaRepository;
+    @Autowired AdminJpaRepository adminJpaRepository;
+
 
     @Bean
     @Transactional
@@ -48,9 +66,11 @@ public class ModelInit {
             Person[] personArray = Person.init();
             for (Person person : personArray) {
                 // Name and email are used to lookup the person
+                System.out.println(person.getRoles()); 
                 List<Person> personFound = personDetailsService.list(person.getName(), person.getEmail());  // lookup
                 if (personFound.size() == 0) { // add if not found
                     // Roles are added to the database if they do not exist
+                   System.out.println(person.getRoles()); 
                     List<PersonRole> updatedRoles = new ArrayList<>();
                     for (PersonRole role : person.getRoles()) {
                         // Name is used to lookup the role
