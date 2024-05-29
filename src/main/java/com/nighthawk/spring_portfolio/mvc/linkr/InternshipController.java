@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.nighthawk.hacks.InternshipSearcher;
-
 @RestController
 @RequestMapping("/api/internships")
 @CrossOrigin(origins = "*")
@@ -41,16 +39,6 @@ public class InternshipController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
-
-    @GetMapping("/{searchQuery}")
-    public ResponseEntity<List<InternshipDTO>> getInternshipBySearchQuery(@PathVariable String searchQuery) {
-        List<Internship> internships = internshipService.getAllInternships();
-        List<InternshipDTO> internshipDTOs = internships.stream()
-                .map(internship -> new InternshipDTO(internship))
-                .collect(Collectors.toList());
-        List<InternshipDTO> searched = InternshipSearcher.searchInternships(internshipDTOs, searchQuery);
-        return new ResponseEntity<>(searched, HttpStatus.OK);
     }
 
     @PostMapping
