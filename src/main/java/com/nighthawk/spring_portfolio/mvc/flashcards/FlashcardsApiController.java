@@ -19,61 +19,36 @@ public class FlashcardsApiController {
         return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
     }
 
-    // @PostMapping( "/add")
-    // public ResponseEntity<Object> postScore(@RequestParam("topic") String topic,
-    //                                         @RequestParam("question") String question,
-    //                                         @RequestParam("answer") String answer) {
-    //     // A person object WITHOUT ID will create a new record with default roles as student
-    //     Flashcards flashcards = new Flashcards(null, topic, question, answer);
-    //     repository.save(flashcards);
-    //     return new ResponseEntity<>(flashcards +" is created successfully", HttpStatus.CREATED);
-    // }
-
     @PostMapping("/add")
-    public ResponseEntity<Object> postScore(@RequestBody Flashcards flashcard) {
-    repository.save(flashcard);
-    return new ResponseEntity<>(flashcard + " is created successfully", HttpStatus.CREATED);
-}
-
+    public ResponseEntity<Object> postFlashcard(@RequestBody Flashcards flashcard) {
+        repository.save(flashcard);
+        return new ResponseEntity<>(flashcard + " is created successfully", HttpStatus.CREATED);
+    }
 
     @GetMapping("/topics")
     public ResponseEntity<List<String>> getTopics() {
-    List<String> topics = repository.findDistinctTopicsBy();
-    return new ResponseEntity<>(topics, HttpStatus.OK);
+        List<String> topics = repository.findDistinctTopicsBy();
+        return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
-    /*@PostMapping("/add")
-    public ResponseEntity<Flashcards> addFlashcard(@RequestBody Flashcards flashcard) {
-        // Check if the flashcard already exists
-        if (repository.existsById(flashcard.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        // Save the new flashcard
-        Flashcards savedFlashcard = repository.save(flashcard);
-        return new ResponseEntity<>(savedFlashcard, HttpStatus.CREATED);
-    }*/
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Flashcards> updateFlashcard(@PathVariable Long id, @RequestBody Flashcards flashcardDetails) {
+        Flashcards flashcard = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Flashcard not found for this id :: " + id));
 
-    @PutMapping("/update")
-    public ResponseEntity<Flashcards> updateFlashcard(@RequestBody Flashcards flashcard) {
-        // Check if the flashcard already exists
-        if (!repository.existsById(flashcard.getId())) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Update the existing flashcard
-        Flashcards updatedFlashcard = repository.save(flashcard);
-        return new ResponseEntity<>(updatedFlashcard, HttpStatus.OK);
+        flashcard.setTopic(flashcardDetails.getTopic());
+        flashcard.setQuestion(flashcardDetails.getQuestion());
+        flashcard.setAnswer(flashcardDetails.getAnswer());
+        final Flashcards updatedFlashcard = repository.save(flashcard);
+        return ResponseEntity.ok(updatedFlashcard);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFlashcard(@PathVariable Long id) {
-        // Check if the flashcard exists
-        if (!repository.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Flashcards flashcard = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Flashcard not found for this id :: " + id));
 
-        // Delete the flashcard
-        repository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        repository.delete(flashcard);
+        return ResponseEntity.noContent().build();
     }
 }
