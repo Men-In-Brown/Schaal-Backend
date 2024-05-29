@@ -14,7 +14,7 @@ public class FlashcardsApiController {
     @Autowired
     private FlashcardsJpaRepository repository;
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<Flashcards>> getFlashcards() {
         return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
     }
@@ -29,6 +29,12 @@ public class FlashcardsApiController {
     public ResponseEntity<List<String>> getTopics() {
         List<String> topics = repository.findDistinctTopicsBy();
         return new ResponseEntity<>(topics, HttpStatus.OK);
+    }
+
+    @GetMapping("/byTopic")
+    public ResponseEntity<List<Flashcards>> getFlashcardsByTopic(@RequestParam String topic) {
+        List<Flashcards> flashcards = repository.findByTopicIgnoreCase(topic);
+        return new ResponseEntity<>(flashcards, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
