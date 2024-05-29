@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
 
@@ -83,7 +84,7 @@ public class AdminDetailsService implements UserDetailsService {
                 admin.setPassword(passwordEncoder.encode(password));
             }
             if (admin.getRoles().isEmpty()) {
-                AdminRole role = personroleJpaRepository.findByName(roleName);
+                PersonRole role = personroleJpaRepository.findByName(roleName);
                 if (role != null) {
                     admin.getRoles().add(role);
                 }
@@ -91,28 +92,28 @@ public class AdminDetailsService implements UserDetailsService {
         }
     }
 
-    public void saveRole(AdminRole role) {
-        AdminRole roleObj = personroleJpaRepository.findByName(role.getName());
+    public void saveRole(PersonRole role) {
+        PersonRole roleObj = personroleJpaRepository.findByName(role.getName());
         if (roleObj == null) {
             personroleJpaRepository.save(role);
         }
     }
 
-    public List<AdminRole> listAllRoles() {
+    public List<PersonRole> listAllRoles() {
         return personroleJpaRepository.findAll();
     }
 
-    public AdminRole findRole(String roleName) {
+    public PersonRole findRole(String roleName) {
         return personroleJpaRepository.findByName(roleName);
     }
 
     public void addRoleToAdmin(String email, String roleName) {
         Admin admin = adminJpaRepository.findByEmail(email);
         if (admin != null) {
-            AdminRole role = personroleJpaRepository.findByName(roleName);
+            PersonRole role = personroleJpaRepository.findByName(roleName);
             if (role != null) {
                 boolean addRole = true;
-                for (AdminRole roleObj : admin.getRoles()) {
+                for (PersonRole roleObj : admin.getRoles()) {
                     if (roleObj.getName().equals(roleName)) {
                         addRole = false;
                         break;

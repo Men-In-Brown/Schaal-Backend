@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
 
@@ -25,7 +26,7 @@ public class InternDetailsService implements UserDetailsService {
     private InternJpaRepository internJpaRepository;
 
     @Autowired
-    private PersonRoleJpaRepository personRoleJpaRepository;
+    private PersonRoleJpaRepository personroleJpaRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -83,7 +84,7 @@ public class InternDetailsService implements UserDetailsService {
                 intern.setPassword(passwordEncoder.encode(password));
             }
             if (intern.getRoles().isEmpty()) {
-                InternRole role = personroleJpaRepository.findByName(roleName);
+                PersonRole role = personroleJpaRepository.findByName(roleName);
                 if (role != null) {
                     intern.getRoles().add(role);
                 }
@@ -91,28 +92,28 @@ public class InternDetailsService implements UserDetailsService {
         }
     }
 
-    public void saveRole(InternRole role) {
-        InternRole roleObj = personroleJpaRepository.findByName(role.getName());
+    public void saveRole(PersonRole role) {
+        PersonRole roleObj = personroleJpaRepository.findByName(role.getName());
         if (roleObj == null) {
             personroleJpaRepository.save(role);
         }
     }
 
-    public List<InternRole> listAllRoles() {
+    public List<PersonRole> listAllRoles() {
         return personroleJpaRepository.findAll();
     }
 
-    public InternRole findRole(String roleName) {
+    public PersonRole findRole(String roleName) {
         return personroleJpaRepository.findByName(roleName);
     }
 
     public void addRoleToIntern(String email, String roleName) {
         Intern intern = internJpaRepository.findByEmail(email);
         if (intern != null) {
-            InternRole role = personroleJpaRepository.findByName(roleName);
+            PersonRole role = personroleJpaRepository.findByName(roleName);
             if (role != null) {
                 boolean addRole = true;
-                for (InternRole roleObj : intern.getRoles()) {
+                for (PersonRole roleObj : intern.getRoles()) {
                     if (roleObj.getName().equals(roleName)) {
                         addRole = false;
                         break;

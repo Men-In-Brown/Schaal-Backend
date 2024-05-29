@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
 
@@ -25,7 +26,7 @@ public class TeacherDetailsService implements UserDetailsService {
     private TeacherJpaRepository teacherJpaRepository;
 
     @Autowired
-    private PersonRoleJpaRepository personRoleJpaRepository;
+    private PersonRoleJpaRepository personroleJpaRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -83,7 +84,7 @@ public class TeacherDetailsService implements UserDetailsService {
                 teacher.setPassword(passwordEncoder.encode(password));
             }
             if (teacher.getRoles().isEmpty()) {
-                TeacherRole role = personroleJpaRepository.findByName(roleName);
+                PersonRole role = personroleJpaRepository.findByName(roleName);
                 if (role != null) {
                     teacher.getRoles().add(role);
                 }
@@ -91,28 +92,28 @@ public class TeacherDetailsService implements UserDetailsService {
         }
     }
 
-    public void saveRole(TeacherRole role) {
-        TeacherRole roleObj = personroleJpaRepository.findByName(role.getName());
+    public void saveRole(PersonRole role) {
+        PersonRole roleObj = personroleJpaRepository.findByName(role.getName());
         if (roleObj == null) {
             personroleJpaRepository.save(role);
         }
     }
 
-    public List<TeacherRole> listAllRoles() {
+    public List<PersonRole> listAllRoles() {
         return personroleJpaRepository.findAll();
     }
 
-    public TeacherRole findRole(String roleName) {
+    public PersonRole findRole(String roleName) {
         return personroleJpaRepository.findByName(roleName);
     }
 
     public void addRoleToTeacher(String email, String roleName) {
         Teacher teacher = teacherJpaRepository.findByEmail(email);
         if (teacher != null) {
-            TeacherRole role = personroleJpaRepository.findByName(roleName);
+            PersonRole role = personroleJpaRepository.findByName(roleName);
             if (role != null) {
                 boolean addRole = true;
-                for (TeacherRole roleObj : teacher.getRoles()) {
+                for (PersonRole roleObj : teacher.getRoles()) {
                     if (roleObj.getName().equals(roleName)) {
                         addRole = false;
                         break;
