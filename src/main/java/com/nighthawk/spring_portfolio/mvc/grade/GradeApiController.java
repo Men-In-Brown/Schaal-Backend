@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import com.nighthawk.hacks.GradeSorter;
 @CrossOrigin(origins = "*", allowedHeaders = "*") // added this line
 @RestController
 @RequestMapping("/api/grade/")
@@ -39,6 +40,12 @@ public class GradeApiController {
         }
         // Bad ID
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/{sortProperty}")
+    public ResponseEntity<List<Grade>> getSortedGrades(@PathVariable String id) {
+        List<Grade> result = GradeSorter.sortByProperty(repository.findAllByOrderByNameAsc(), id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     
     // @GetMapping("/searchByEmail")
