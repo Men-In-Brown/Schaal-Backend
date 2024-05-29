@@ -14,19 +14,11 @@ import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
 import com.nighthawk.spring_portfolio.mvc.linkr.InternshipRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
 import com.nighthawk.spring_portfolio.mvc.note.NoteJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.admin.Admin;
-import com.nighthawk.spring_portfolio.mvc.admin.AdminJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.intern.Intern;
-import com.nighthawk.spring_portfolio.mvc.intern.InternJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
 import com.nighthawk.spring_portfolio.mvc.person.PersonJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRole;
 import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.student.Student;
-import com.nighthawk.spring_portfolio.mvc.student.StudentJpaRepository;
-import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
-import com.nighthawk.spring_portfolio.mvc.teacher.TeacherJpaRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,28 +65,6 @@ public class ModelInit {
             }
             // for testing: giving admin role to Mortensen
             personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
-
-            // initializing classPeriod objects
-            String[] emailsForInit = {"toby@gmail.com", "jm1021@gmail.com"};
-            String[] emailsForStudent = {"toby@gmail.com", "lexb@gmail.com", "niko@gmail.com", "madam@gmail.com", "jm1021@gmail.com"};
-            int i = 0;
-            ClassPeriod[] classPeriods = ClassPeriod.init();
-            for (ClassPeriod classPeriod : classPeriods) {
-                ClassPeriod existingClass = classRepo.findByName(classPeriod.getName());
-                if (existingClass != null) {
-                    // class already exists
-                    i++;
-                    continue;
-                } else {
-                    // class doesn't exist
-                    classService.save(classPeriod);
-                    classService.addLeaderToClass(emailsForInit[i], classPeriod.getId());
-                    for (int j = 4 - i; j >= 1 - i; j--) {
-                        classService.addStudentToClass(emailsForStudent[j], classPeriod.getId());
-                    }
-                    i++;
-                }
-            }
     };
 }
 }

@@ -2,6 +2,13 @@ package com.nighthawk.spring_portfolio.mvc.person;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -21,7 +28,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-import com.nighthawk.spring_portfolio.mvc.qrCode.QrCode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import lombok.AllArgsConstructor;
@@ -67,6 +73,9 @@ public class Person {
     @Size(min = 2, max = 30, message = "First and Last Name (2 to 30 chars)")
     private String name;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
+
     @NonNull
     @Size(min = 2, max = 20)
     @Column(unique = true)
@@ -75,27 +84,6 @@ public class Person {
     // roles for permissions, different branch
     @ManyToMany(fetch = EAGER)
     private Collection<PersonRole> roles = new ArrayList<>();
-
-    @ManyToMany(fetch = EAGER)
-    private Collection<QrCode> qrCodes = new ArrayList<>();
-
-
-    // trying out listing person's classes
-    // @ManyToMany(fetch = LAZY)
-    // private Collection<ClassPeriod> classPeriods = new ArrayList<>();
-
-    // to be implemented later
-    /*
-     * 
-     * @ManyToMany(fetch = LAZY)
-     * private Collection<GraphData> statsData = new ArrayList<>();
-     * 
-     * @ManyToMany(fetch = LAZY)
-     * private Collection<QRCode> qrCodes = new ArrayList<>();
-     */
-
-    // NO NEED FOR ROLES METHODS IN PERSON, all roles add/deletion are handled in
-    // other files due to object relationships
     
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "person_subjects", joinColumns = @JoinColumn(name = "person_id"))
@@ -103,11 +91,12 @@ public class Person {
     private Collection<String> subjectsOfInterest = new ArrayList<>();
 
     // Constructor used when building object from an API
-    public Person(String email, String password, String name, String usn, String[] subjectsOfInterest) {
+    public Person(String email, String password, String name, String usn, String[] subjectsOfInterest, Date dob) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.usn = usn;
+        this.dob = dob;
         for (String subject : subjectsOfInterest) {
             this.subjectsOfInterest.add(subject);
         }

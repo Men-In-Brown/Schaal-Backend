@@ -90,7 +90,7 @@ public class PersonApiController {
         // A person object WITHOUT ID will create a new record with default roles as
         // student
         Person person = new Person(personRequest.getEmail(), personRequest.getPassword(), personRequest.getName(),
-                personRequest.getUsn(), personRequest.getSubjectsOfInterest());
+                personRequest.getUsn(), personRequest.getSubjectsOfInterest(), personRequest.getDob());
         personDetailsService.save(person);
         return new ResponseEntity<>(personRequest.getEmail() + " is created successfully", HttpStatus.CREATED);
     }

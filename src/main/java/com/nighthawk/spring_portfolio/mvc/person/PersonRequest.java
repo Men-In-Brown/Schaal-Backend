@@ -1,17 +1,21 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
+import java.util.Date;
+
 public class PersonRequest {
     private String email;
     private String password;
     private String name;
     private String usn;
+    private Date dob;
     private String[] subjectsOfInterest;
 
-    public PersonRequest(String email, String password, String name, String usn, String[] subjectsOfInterest) {
+    public PersonRequest(String email, String password, String name, String usn, Date dob, String[] subjectsOfInterest) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.usn = usn;
+        this.dob = dob;
         this.subjectsOfInterest = subjectsOfInterest;
     }
 
@@ -34,5 +38,10 @@ public class PersonRequest {
 
     public String[] getSubjectsOfInterest() {
         return this.subjectsOfInterest;
+    }
+
+    public Date getDob() {
+        // TODO Auto-generated method stub
+        return this.dob;
     }
 }
