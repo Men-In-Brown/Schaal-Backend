@@ -14,9 +14,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nighthawk.spring_portfolio.mvc.intern.Intern;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
-import com.nighthawk.spring_portfolio.mvc.student.Student;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,9 +39,9 @@ public class Note {
     @JsonIgnore
     private Person person;
 
-    public Note(String text, Student student) {
+    public Note(String text, Person person) {
         this.text = text;
-        this.person = student;
+        this.person = person;
     }
 
 

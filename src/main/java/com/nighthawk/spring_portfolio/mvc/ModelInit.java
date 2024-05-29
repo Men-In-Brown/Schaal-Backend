@@ -38,143 +38,63 @@ import java.util.List;
 public class ModelInit {  
     @Autowired JokesJpaRepository jokesRepo;
     @Autowired NoteJpaRepository noteRepo;
-    @Autowired PersonRoleJpaRepository roleJpaRepository;
-    @Autowired PersonDetailsService personDetailsService;
+    @Autowired PersonRoleJpaRepository roleRepo;
+    @Autowired PersonDetailsService personService;
     @Autowired PersonJpaRepository personJpaRepository;
     @Autowired InternshipRepository internshipRepository;
     @Autowired PasswordEncoder passwordEncoder;
-    @Autowired StudentJpaRepository studentJpaRepository;
-    @Autowired TeacherJpaRepository teacherJpaRepository;
-    @Autowired InternJpaRepository internJpaRepository;
-    @Autowired AdminJpaRepository adminJpaRepository;
-
 
     @Bean
     @Transactional
     CommandLineRunner run() {  // The run() method will be executed after the application starts
         return args -> {
-
-            // Joke database is populated with starting jokes
-            String[] jokesArray = Jokes.init();
-            for (String joke : jokesArray) {
-                List<Jokes> jokeFound = jokesRepo.findByJokeIgnoreCase(joke);  // JPA lookup
-                if (jokeFound.size() == 0)
-                    jokesRepo.save(new Jokes(null, joke, 0, 0)); //JPA save
+            PersonRole[] personRoles = PersonRole.init();
+            for (PersonRole role : personRoles) {
+                PersonRole existingRole = roleRepo.findByName(role.getName());
+                if (existingRole != null) {
+                    // role already exists
+                    continue;
+                } else {
+                    // role doesn't exist
+                    roleRepo.save(role);
+                }
             }
 
-            // Person database is populated with starting people
+            // Person database is populated with test data
             Person[] personArray = Person.init();
             for (Person person : personArray) {
-                // Name and email are used to lookup the person
-                System.out.println(person.getRoles()); 
-                List<Person> personFound = personDetailsService.list(person.getName(), person.getEmail());  // lookup
-                if (personFound.size() == 0) { // add if not found
-                    // Roles are added to the database if they do not exist
-                   System.out.println(person.getRoles()); 
-                    List<PersonRole> updatedRoles = new ArrayList<>();
-                    for (PersonRole role : person.getRoles()) {
-                        // Name is used to lookup the role
-                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());  // JPA lookup
-                        if (roleFound == null) { // add if not found
-                            // Save the new role to database
-                            roleJpaRepository.save(role);  // JPA save
-                            roleFound = role;
-                        }
-                        // Accumulate reference to role from database
-                        updatedRoles.add(roleFound);
-                    }
-                    // Update person with roles from role database
-                    person.setRoles(updatedRoles); // Object reference is updated
+                //findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase
+                List<Person> personFound = personService.list(person.getName(), person.getEmail());  // lookup
+                if (personFound.size() == 0) {
+                    personService.save(person);  // save
 
-                    // Save person to database
-                    personDetailsService.save(person); // JPA save
+                    personService.addRoleToPerson(person.getEmail(), "ROLE_USER");
+                }
+            }
+            // for testing: giving admin role to Mortensen
+            personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
 
-                    // Add a "test note" for each new person
-                    String text = "Test " + person.getEmail();
-                    Note n = new Note(text, person);  // constructor uses new person as Many-to-One association
-                    noteRepo.save(n);  // JPA Save                  
-                }
-            }
-            Admin[] adminArray = Admin.init();
-            for (Admin admin : adminArray) {
-                List<Person> adminFound = personDetailsService.list(admin.getName(), admin.getEmail());
-                if (adminFound.size() == 0) {
-                    List<PersonRole> updatedRoles = new ArrayList<>();
-                    for (PersonRole role : admin.getRoles()) {
-                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
-                        if (roleFound == null) {
-                            roleJpaRepository.save(role);
-                            roleFound = role;
+            // initializing classPeriod objects
+            String[] emailsForInit = {"toby@gmail.com", "jm1021@gmail.com"};
+            String[] emailsForStudent = {"toby@gmail.com", "lexb@gmail.com", "niko@gmail.com", "madam@gmail.com", "jm1021@gmail.com"};
+            int i = 0;
+            ClassPeriod[] classPeriods = ClassPeriod.init();
+            for (ClassPeriod classPeriod : classPeriods) {
+                ClassPeriod existingClass = classRepo.findByName(classPeriod.getName());
+                if (existingClass != null) {
+                    // class already exists
+                    i++;
+                    continue;
+                } else {
+                    // class doesn't exist
+                    classService.save(classPeriod);
+                    classService.addLeaderToClass(emailsForInit[i], classPeriod.getId());
+                    for (int j = 4 - i; j >= 1 - i; j--) {
+                        classService.addStudentToClass(emailsForStudent[j], classPeriod.getId());
                     }
-                    updatedRoles.add(roleFound);
+                    i++;
                 }
-                admin.setRoles(updatedRoles);
-                personDetailsService.save(admin);
-                String text = "Test " + admin.getEmail();
-                Note n = new Note(text, admin);
-                noteRepo.save(n);
             }
-        }
-            Intern[] internArray = Intern.init();
-            for (Intern intern : internArray) {
-                List<Person> internFound = personDetailsService.list(intern.getName(), intern.getEmail());
-                if (internFound.size() == 0) {
-                    List<PersonRole> updatedRoles = new ArrayList<>();
-                    for (PersonRole role : intern.getRoles()) {
-                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
-                        if (roleFound == null) {
-                            roleJpaRepository.save(role);
-                            roleFound = role;
-                    }
-                    updatedRoles.add(roleFound);
-                }
-                intern.setRoles(updatedRoles);
-                personDetailsService.save(intern);
-                String text = "Test " + intern.getEmail();
-                Note n = new Note(text, intern);
-                noteRepo.save(n);
-            }
-        }
-            Student[] studentArray = Student.init();
-            for (Student student : studentArray) {
-                List<Person> studentFound = personDetailsService.list(student.getName(), student.getEmail());
-                if (studentFound.size() == 0) {
-                    List<PersonRole> updatedRoles = new ArrayList<>();
-                    for (PersonRole role : student.getRoles()) {
-                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
-                        if (roleFound == null) {
-                            roleJpaRepository.save(role);
-                            roleFound = role;
-                    }
-                    updatedRoles.add(roleFound);
-                }
-                student.setRoles(updatedRoles);
-                personDetailsService.save(student);
-                String text = "Test " + student.getEmail();
-                Note n = new Note(text, student);
-                noteRepo.save(n);
-            }
-        }
-            Teacher[] teacherArray = Teacher.init();
-            for (Teacher teacher : teacherArray) {
-                List<Person> teacherFound = personDetailsService.list(teacher.getName(), teacher.getEmail());
-                if (teacherFound.size() == 0) {
-                    List<PersonRole> updatedRoles = new ArrayList<>();
-                    for (PersonRole role : teacher.getRoles()) {
-                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());
-                        if (roleFound == null) {
-                            roleJpaRepository.save(role);
-                            roleFound = role;
-                    }
-                    updatedRoles.add(roleFound);
-                }
-                teacher.setRoles(updatedRoles);
-                personDetailsService.save(teacher);
-                String text = "Test " + teacher.getEmail();
-                Note n = new Note(text, teacher);
-                noteRepo.save(n);
-            }
-        }
     };
 }
 }

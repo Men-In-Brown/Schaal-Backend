@@ -6,70 +6,119 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/*
+This class has an instance of Java Persistence API (JPA)
+-- @Autowired annotation. Allows Spring to resolve and inject collaborating beans into our bean.
+-- Spring Data JPA will generate a proxy instance
+-- Below are some CRUD methods that we can use with our database
+*/
 @Service
 @Transactional
-public class PersonDetailsService implements UserDetailsService {
-
-    @Autowired
+public class PersonDetailsService implements UserDetailsService { // "implements" ties ModelRepo to Spring Security
+    // Encapsulate many object into a single Bean (Person, Roles, and Scrum)
+    @Autowired // Inject PersonJpaRepository
     private PersonJpaRepository personJpaRepository;
-
-    @Autowired
+    @Autowired // Inject RoleJpaRepository
     private PersonRoleJpaRepository personRoleJpaRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // @Autowired // Inject PasswordEncoder
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    /*
+     * UserDetailsService Overrides and maps Person & Roles POJO into Spring
+     * Security
+     */
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Person person = personJpaRepository.findByEmail(email);
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+        Person person = personJpaRepository.findByEmail(email); // setting variable user equal to the method finding the
+                                                                // username in the database
         if (person == null) {
             throw new UsernameNotFoundException("User not found with username: " + email);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        person.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        person.getRoles().forEach(role -> { // loop through roles
+            authorities.add(new SimpleGrantedAuthority(role.getName())); // create a SimpleGrantedAuthority by passed in
+                                                                         // role, adding it all to the authorities list,
+                                                                         // list of roles gets past in for spring
+                                                                         // security
         });
-        return new org.springframework.security.core.userdetails.User(person.getEmail(), person.getPassword(), authorities);
+        // train spring security to User and Authorities
+        return new org.springframework.security.core.userdetails.User(person.getEmail(), person.getPassword(),
+                authorities);
     }
+
+    /* Person Section */
 
     public List<Person> listAll() {
         return personJpaRepository.findAllByOrderByNameAsc();
     }
 
+    // custom query to find match to name or email
     public List<Person> list(String name, String email) {
         return personJpaRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(name, email);
     }
 
+    // custom query to find anything containing term in name or email ignoring case
     public List<Person> listLike(String term) {
         return personJpaRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(term, term);
     }
 
+    // custom query to find anything containing term in name or email ignoring case
     public List<Person> listLikeNative(String term) {
-        String likeTerm = String.format("%%%s%%", term);
-        return personJpaRepository.findByLikeTermNative(likeTerm);
+        String like_term = String.format("%%%s%%", term); // Like required % rappers
+        return personJpaRepository.findByLikeTermNative(like_term);
     }
 
-    public void save(Teacher teacher) {
-        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
-        personJpaRepository.save(teacher);
+    // encode password prior to sava
+    public void save(Person person) {
+        person.setPassword(passwordEncoder().encode(person.getPassword()));
+        personJpaRepository.save(person);
     }
+
+    // Method to set the online status of a user
+    // public void setOnlineStatus(String email, boolean online) {
+    // Person person = personJpaRepository.findByEmail(email);
+    // if (person != null) {
+    // person.setOnline(online);
+    // personJpaRepository.save(person);
+    // }
+    // }
+
+    // Method to set the online status of a user when they log in
+    // public void loginUser(String email) {
+    // setOnlineStatus(email, true);
+    // }
+
+    // Method to set the online status of a user when they log out
+    // public void logoutUser(String email) {
+    // setOnlineStatus(email, false);
+    // }
+
+    // public List<Person> getConnectedUsers() {
+    // return personJpaRepository.findByOnline(true);
+    // }
 
     public Person get(long id) {
-        return personJpaRepository.findById(id).orElse(null);
+        return (personJpaRepository.findById(id).isPresent())
+                ? personJpaRepository.findById(id).get()
+                : null;
     }
 
     public Person getByEmail(String email) {
-        return personJpaRepository.findByEmail(email);
+        return (personJpaRepository.findByEmail(email));
+    }
+
+    public Person getByUsn(String usn) {
+        return (personJpaRepository.findByUsn(usn));
     }
 
     public void delete(long id) {
@@ -79,20 +128,27 @@ public class PersonDetailsService implements UserDetailsService {
     public void defaults(String password, String roleName) {
         for (Person person : listAll()) {
             if (person.getPassword() == null || person.getPassword().isEmpty() || person.getPassword().isBlank()) {
-                person.setPassword(passwordEncoder.encode(password));
+                person.setPassword(passwordEncoder().encode(password));
             }
             if (person.getRoles().isEmpty()) {
                 PersonRole role = personRoleJpaRepository.findByName(roleName);
-                if (role != null) {
+                if (role != null) { // verify role
                     person.getRoles().add(role);
                 }
             }
         }
     }
 
+    // getting persons by subject of interest
+    public List<Person> getPersonsBySubjectOfInterest(String subjectOfInterest) {
+        return personJpaRepository.findBySubjectOfInterestIgnoreCase(subjectOfInterest);
+    }
+
+    /* Roles Section */
+
     public void saveRole(PersonRole role) {
         PersonRole roleObj = personRoleJpaRepository.findByName(role.getName());
-        if (roleObj == null) {
+        if (roleObj == null) { // only add if it is not found
             personRoleJpaRepository.save(role);
         }
     }
@@ -105,20 +161,23 @@ public class PersonDetailsService implements UserDetailsService {
         return personRoleJpaRepository.findByName(roleName);
     }
 
-    public void addRoleToPerson(String email, String roleName) {
+    public void addRoleToPerson(String email, String roleName) { // by passing in the two strings you are giving the
+                                                                 // user that certain role
         Person person = personJpaRepository.findByEmail(email);
-        if (person != null) {
+        if (person != null) { // verify person
             PersonRole role = personRoleJpaRepository.findByName(roleName);
-            if (role != null) {
+            if (role != null) { // verify role
                 boolean addRole = true;
-                for (PersonRole roleObj : person.getRoles()) {
+                for (PersonRole roleObj : person.getRoles()) { // only add if user is missing role
                     if (roleObj.getName().equals(roleName)) {
                         addRole = false;
                         break;
                     }
                 }
-                if (addRole) person.getRoles().add(role);
+                if (addRole)
+                    person.getRoles().add(role); // everything is valid for adding role
             }
         }
     }
+
 }

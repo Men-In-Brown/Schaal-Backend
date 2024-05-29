@@ -1,172 +1,157 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.nighthawk.spring_portfolio.mvc.jwt.JwtTokenUtil;
+
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/person")
 public class PersonApiController {
+    // @Autowired
+    // private JwtTokenUtil jwtGen;
+    /*
+     * #### RESTful API ####
+     * Resource: https://spring.io/guides/gs/rest-service/
+     */
 
+    // Autowired enables Control to connect POJO Object through JPA
     @Autowired
     private PersonJpaRepository repository;
 
+    @Autowired
+    private PersonDetailsService personDetailsService;
+
+    @Autowired
+    private JwtTokenUtil tokenUtil;
+
+    /*
+     * GET List of People
+     */
     @GetMapping("/")
     public ResponseEntity<List<Person>> getPeople() {
         return new ResponseEntity<>(repository.findAllByOrderByNameAsc(), HttpStatus.OK);
     }
 
+    /*
+     * GET individual Person using ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPerson(@PathVariable long id) {
         Optional<Person> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            Person person = optional.get();
-            return new ResponseEntity<>(person, HttpStatus.OK);
+        if (optional.isPresent()) { // Good ID
+            Person person = optional.get(); // value from findByID
+            return new ResponseEntity<>(person, HttpStatus.OK); // OK HTTP response: status code, headers, and body
         }
+        // Bad ID
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    /*
+     * DELETE individual Person using ID
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Person> deletePerson(@PathVariable long id) {
         Optional<Person> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            Person person = optional.get();
-            repository.deleteById(id);
-            return new ResponseEntity<>(person, HttpStatus.OK);
+        if (optional.isPresent()) { // Good ID
+            Person person = optional.get(); // value from findByID
+            repository.deleteById(id); // value from findByID
+            return new ResponseEntity<>(person, HttpStatus.OK); // OK HTTP response: status code, headers, and body
         }
+        // Bad ID
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<Object> postPerson(@RequestBody PersonRequest request) {
-        Date dob = null; // Initialize dob to null
-    
-        try {
-            dob = new SimpleDateFormat("MM-dd-yyyy").parse(request.getDob());
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
+    /*
+     * NEW METHOD: DELETE self using body
+     */
+    @DeleteMapping("/delete/self")
+    public ResponseEntity<Person> deleteSelf(@RequestBody Person self) {
+        Person deletedPerson = repository.findByEmailAndPassword(self.getEmail(), self.getPassword());
+        if (deletedPerson != null) { // Good ID
+            repository.deleteById(deletedPerson.getId()); // value from findByID
+            return new ResponseEntity<>(deletedPerson, HttpStatus.OK); // OK HTTP response: status code, headers, and
+                                                                       // body
         }
-    
-        // Check if dob is still null after the try-catch block
-        if (dob == null) {
-            return new ResponseEntity<>("Invalid date format. Please use MM-dd-yyyy format.", HttpStatus.BAD_REQUEST);
-        }
-    
-        // Find or create the role
-        PersonRole role = repository.findByName(request.getRole());
-        if (role == null) {
-            // Role doesn't exist, create a new one
-            role = new PersonRole(request.getRole());
-            repository.save(role);
-        }
-    
-        // Create and save Person entity
-        Person person = new Person(request.getEmail(), request.getPassword(), request.getName(), dob);
-        person.getRoles().add(role); // Add the role to the person
-        repository.save(person);
-    
-        return new ResponseEntity<>(request.getEmail() + " is created successfully", HttpStatus.CREATED);
-    }    
+        // Bad ID
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
-    @PostMapping("/search")
-    public ResponseEntity<Object> personSearch(@RequestBody final String term) {
+    /*
+     * POST Aa record by Requesting Parameters from URI
+     */
+    @PostMapping("/post")
+    public ResponseEntity<Object> postPerson(@RequestBody PersonRequest personRequest) {
+        // A person object WITHOUT ID will create a new record with default roles as
+        // student
+        Person person = new Person(personRequest.getEmail(), personRequest.getPassword(), personRequest.getName(),
+                personRequest.getUsn(), personRequest.getSubjectsOfInterest());
+        personDetailsService.save(person);
+        return new ResponseEntity<>(personRequest.getEmail() + " is created successfully", HttpStatus.CREATED);
+    }
+
+    // get persons by subject of interest - endpointmethod
+    @GetMapping("/getBySubject/{subjectOfInterest}")
+    public ResponseEntity<?> getPersonsBySubject(@PathVariable String subjectOfInterest) {
+        List<Person> personList = personDetailsService.getPersonsBySubjectOfInterest(subjectOfInterest);
+        // regardless of outcome, even if it's an empty list, it's still a valid output
+        return new ResponseEntity<>(personList, HttpStatus.OK);
+    }
+
+
+    /*
+     * The personSearch API looks across database for partial match to term (k,v)
+     * passed by RequestEntity body
+     */
+    @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> personSearch(@RequestBody final Map<String, String> map) {
+        // extract term from RequestEntity
+        String term = (String) map.get("term");
+
+        // JPA query to filter on term
         List<Person> list = repository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(term, term);
+
+        // return resulting list and status, error checking should be added
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/setStats", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> personStats(@RequestBody final Map<String,Object> stat_map) {
-        // find ID
-        long id=Long.parseLong((String)stat_map.get("id"));  
-        Optional<Person> optional = repository.findById((id));
-        if (optional.isPresent()) {  // Good ID
-            Person person = optional.get();  // value from findByID
-
-            // Extract Attributes from JSON
-            Map<String, Object> attributeMap = new HashMap<>();
-            for (Map.Entry<String,Object> entry : stat_map.entrySet())  {
-                // Add all attribute other thaN "date" to the "attribute_map"
-                if (!entry.getKey().equals("date") && !entry.getKey().equals("id"))
-                    attributeMap.put(entry.getKey(), entry.getValue());
-            }
-
-            // Set Date and Attributes to SQL HashMap
-            Map<String, Map<String, Object>> date_map = new HashMap<>();
-            date_map.put( (String) stat_map.get("date"), attributeMap );
-            person.setStats(date_map);  // BUG, needs to be customized to replace if existing or append if new
-            repository.save(person);  // conclude by writing the stats updates
-
-            // return Person with update Stats
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        }
-        // return Bad ID
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
-    }
-
-    @GetMapping("/compareClassesWithPopulation/{personId}")
-    public ResponseEntity<List<String>> compareClassesWithPopulation(@PathVariable Long personId) {
-        Optional<Person> optionalPerson = repository.findById(personId);
-    
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-            List<Person> allPersons = repository.findAll();
-            List<String> responseMessages = new ArrayList<>();
-    
-            for (Person otherPerson : allPersons) {
-                if (!otherPerson.getId().equals(personId)) {
-                    List<String> similarClasses = findSimilarClasses(person, otherPerson);
-                    if (!similarClasses.isEmpty()) {
-                        String message = String.format("You have classes with %s. Here are the classes you have together: %s",
-                                                       otherPerson.getName(), similarClasses.toString());
-                        responseMessages.add(message);
-                    }
-                }
-            }
-    
-            if (responseMessages.isEmpty()) {
-                return ResponseEntity.ok(Collections.singletonList("No similar classes found with any other user."));
-            } else {
-                return ResponseEntity.ok(responseMessages);
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    private List<String> findSimilarClasses(Person person1, Person person2) {
-        Map<String, Map<String, Object>> stats1 = person1.getStats();
-        Map<String, Map<String, Object>> stats2 = person2.getStats();
-
-        List<String> similarClasses = new ArrayList<>();
-
-        for (String date : stats1.keySet()) {
-            if (stats2.containsKey(date)) {
-                Map<String, Object> attributes1 = stats1.get(date);
-                Map<String, Object> attributes2 = stats2.get(date);
-
-                for (String period : attributes1.keySet()) {
-                    if (attributes2.containsKey(period) && attributes1.get(period).equals(attributes2.get(period))) {
-                        similarClasses.add((String) attributes1.get(period));
-                    }
-                }
-            }
-        }
-
-        return similarClasses;
-    }
-
+    /*
+     * NO LONGER NEEDED
+     * The personStats API adds stats by Date to Person table
+     * 
+     * @PostMapping(value = "/setStats", produces =
+     * MediaType.APPLICATION_JSON_VALUE)
+     * public ResponseEntity<Person> personStats(@RequestBody final
+     * Map<String,Object> stat_map) {
+     * // find ID
+     * long id=Long.parseLong((String)stat_map.get("id"));
+     * Optional<Person> optional = repository.findById((id));
+     * if (optional.isPresent()) { // Good ID
+     * Person person = optional.get(); // value from findByID
+     * 
+     * // Extract Attributes from JSON
+     * Map<String, Object> attributeMap = new HashMap<>();
+     * for (Map.Entry<String,Object> entry : stat_map.entrySet()) {
+     * // Add all attribute other thaN "date" to the "attribute_map"
+     * if (!entry.getKey().equals("date") && !entry.getKey().equals("id"))
+     * attributeMap.put(entry.getKey(), entry.getValue());
+     * }
+     * 
+     * // Set Date and Attributes to SQL HashMap
+     * Map<String, Map<String, Object>> date_map = new HashMap<>();
+     * date_map.put( (String) stat_map.get("date"), attributeMap );
+     * repository.save(person); // conclude by writing the stats updates
+     * 
+     * // return Person with update Stats
+     * return new ResponseEntity<>(person, HttpStatus.OK);
+     * }
+     * // return Bad ID
+     * return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+     * }
+     */
 }
-

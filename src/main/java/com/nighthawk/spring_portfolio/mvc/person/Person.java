@@ -2,30 +2,26 @@ package com.nighthawk.spring_portfolio.mvc.person;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Convert;
-import jakarta.persistence.DiscriminatorColumn;
-
 import static jakarta.persistence.FetchType.EAGER;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.springframework.format.annotation.DateTimeFormat;
-
+import com.nighthawk.spring_portfolio.mvc.qrCode.QrCode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import lombok.AllArgsConstructor;
@@ -33,75 +29,157 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+/*
+Person is a POJO, Plain Old Java Object.
+First set of annotations add functionality to POJO
+--- @Setter @Getter @ToString @NoArgsConstructor @RequiredArgsConstructor
+The last annotation connect to database
+--- @Entity
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Convert(attributeName ="person", converter = JsonType.class)
+@Convert(attributeName = "person", converter = JsonType.class)
 public class Person {
 
+    // automatic unique identifier for Person record
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // email, password, roles are key attributes to login and authentication
     @NotEmpty
-    @Size(min=5)
-    @Column(unique=true)
+    @Size(min = 5)
+    @Column(unique = true)
     @Email
     private String email;
 
     @NotEmpty
     private String password;
 
+    // @NotEmpty
+    // private boolean online;
+
+    // @NonNull, etc placed in params of constructor: "@NonNull @Size(min = 2, max =
+    // 30, message = "Name (2 to 30 chars)") String name"
     @NonNull
-    @Size(min = 2, max = 30, message = "Name (2 to 30 chars)")
+    @Size(min = 2, max = 30, message = "First and Last Name (2 to 30 chars)")
     private String name;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date dob;
+    @NonNull
+    @Size(min = 2, max = 20)
+    @Column(unique = true)
+    private String usn;
 
+    // roles for permissions, different branch
     @ManyToMany(fetch = EAGER)
     private Collection<PersonRole> roles = new ArrayList<>();
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private Map<String,Map<String, Object>> stats = new HashMap<>(); 
+    @ManyToMany(fetch = EAGER)
+    private Collection<QrCode> qrCodes = new ArrayList<>();
 
-    public Person(String email, String password, String name, Date dob) {
+
+    // trying out listing person's classes
+    // @ManyToMany(fetch = LAZY)
+    // private Collection<ClassPeriod> classPeriods = new ArrayList<>();
+
+    // to be implemented later
+    /*
+     * 
+     * @ManyToMany(fetch = LAZY)
+     * private Collection<GraphData> statsData = new ArrayList<>();
+     * 
+     * @ManyToMany(fetch = LAZY)
+     * private Collection<QRCode> qrCodes = new ArrayList<>();
+     */
+
+    // NO NEED FOR ROLES METHODS IN PERSON, all roles add/deletion are handled in
+    // other files due to object relationships
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "person_subjects", joinColumns = @JoinColumn(name = "person_id"))
+    @Column(name = "subject")
+    private Collection<String> subjectsOfInterest = new ArrayList<>();
+
+    // Constructor used when building object from an API
+    public Person(String email, String password, String name, String usn, String[] subjectsOfInterest) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.dob = dob;
-    }
-
-    public int getAge() {
-        if (this.dob != null) {
-            long ageInMillis = new Date().getTime() - this.dob.getTime();
-            return (int) (ageInMillis / 1000 / 60 / 60 / 24 / 365);
+        this.usn = usn;
+        for (String subject : subjectsOfInterest) {
+            this.subjectsOfInterest.add(subject);
         }
-        return -1; // Return default value if dob is null
+        // other attributes implemented later
     }
 
+    // Initialize static test data
     public static Person[] init() {
+        // basics of class construction
         Person p1 = new Person();
-        p1.setEmail("spark@gmail.com");
-        p1.setPassword("123spark");
-        p1.setName("Spark User");
-        p1.setDob(new Date());
-
+        p1.setName("Thomas Edison");
+        p1.setEmail("toby@gmail.com");
+        p1.setPassword("123toby");
+        p1.setUsn("bigT");
+        Collection<String> tobySubjects = new ArrayList<>();
+        tobySubjects.add("Computer Science");
+        tobySubjects.add("Chemistry");
+        p1.setSubjectsOfInterest(tobySubjects);
         Person p2 = new Person();
-        p2.setEmail("spk@gmail.com");
-        p2.setPassword("sparkadmin");
-        p2.setName("Spark Admin");
-        p2.setDob(new Date());
+        p2.setName("Alexander Graham Bell");
+        p2.setEmail("lexb@gmail.com");
+        p2.setPassword("123LexB!");
+        p2.setUsn("phoneNumber1");
+        // p2.setStatus("online");
 
         Person p3 = new Person();
-        p3.setEmail("mort@gmail.com");
-        p3.setPassword("123mort");
-        p3.setName("John Mortensen");
-        p3.setDob(new Date());
+        p3.setName("Nikola Tesla");
+        p3.setEmail("niko@gmail.com");
+        p3.setPassword("123Niko!");
+        p3.setUsn("iOwnX");
+        // p3.setStatus("online");
+        Collection<String> nikoSubjects = new ArrayList<>();
+        nikoSubjects.add("Physics");
+        nikoSubjects.add("Computer Science");
+        p3.setSubjectsOfInterest(nikoSubjects);
 
-        return new Person[]{p1, p2, p3};
+        Person p4 = new Person();
+        p4.setName("Madam Currie");
+        p4.setEmail("madam@gmail.com");
+        p4.setPassword("123Madam!");
+        p4.setUsn("madRadium");
+        // p4.setStatus("online");
+
+        Person p5 = new Person();
+        p5.setName("John Mortensen");
+        p5.setEmail("jm1021@gmail.com");
+        p5.setPassword("123Qwerty!");
+        p5.setUsn("jMort");
+        Collection<String> mortSubjects = new ArrayList<>();
+        mortSubjects.add("Computer Science");
+        mortSubjects.add("Chemistry");
+        p5.setSubjectsOfInterest(mortSubjects);
+
+        Person p6 = new Person();
+        p6.setName("Grace Hopper");
+        p6.setEmail("hop@gmail.com");
+        p6.setPassword("123hop");
+        p6.setUsn("mrsComputer");
+
+        // Array definition and data initialization
+        Person persons[] = { p1, p2, p3, p4, p5, p6 };
+        return (persons);
     }
+
+    public static void main(String[] args) {
+        // obtain Person from initializer
+        Person persons[] = init();
+
+        // iterate using "enhanced for loop"
+        for (Person person : persons) {
+            System.out.println(person); // print object
+        }
+    }
+
 }
