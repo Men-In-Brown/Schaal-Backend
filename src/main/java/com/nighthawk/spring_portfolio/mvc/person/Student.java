@@ -42,9 +42,9 @@ public class Student extends Person {
         s1.getClasses().put("class 3", "csse");
         s1.getClasses().put("class 4", "calcab");
         s1.getClasses().put("class 5", "phys");
-        s1.getInternships().add(new Internship("Name 1", "California", "Tech", "None"));
-        s1.getInternships().add(new Internship("Name 2", "India", "Hosptality", "Tanay"));
-        s1.getInternships().add(new Internship("Name 3", "Shanghai", "Tax Fraud", "Paaras"));
+        s1.getInternships().add(new Internship("Name 1", "California", "Tech", "None", "heehee", "heehee"));
+        s1.getInternships().add(new Internship("Name 2", "India", "Hosptality", "Tanay", "heehee", "heehee"));
+        s1.getInternships().add(new Internship("Name 3", "Shanghai", "Tax Fraud", "Paaras", "heehee", "heehee"));
 
         Student s2 = new Student();
         s2.setEmail("mort@gmail.com");
@@ -57,8 +57,8 @@ public class Student extends Person {
         s2.getClasses().put("class 3", "csse");
         s2.getClasses().put("class 4", "calcab");
         s2.getClasses().put("class 5", "phys");
-        s2.getInternships().add(new Internship("Name 4", "Location 4", "Industry 4", "CEO 4"));
-        s2.getInternships().add(new Internship("Name 5", "Location 5", "Industry 5", "CEO 5"));
+        s2.getInternships().add(new Internship("Name 4", "Location 4", "Industry 4", "CEO 4", "heehee", "heehee"));
+        s2.getInternships().add(new Internship("Name 5", "Location 5", "Industry 5", "CEO 5", "heehee", "heehee"));
 
         return new Student[]{s1, s2};
     }

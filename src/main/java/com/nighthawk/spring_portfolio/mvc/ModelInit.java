@@ -12,7 +12,8 @@ import com.nighthawk.spring_portfolio.mvc.assignment.Assignment;
 import com.nighthawk.spring_portfolio.mvc.assignment.AssignmentJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.grade.Grade;
 import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
-
+import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
+import com.nighthawk.spring_portfolio.mvc.linkr.InternshipRepository;
 import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.LinkrPAT;
 import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.PatJpaRepository;
 
@@ -35,6 +36,7 @@ public class ModelInit {
     @Autowired PersonRoleJpaRepository roleJpaRepository;
     @Autowired PersonDetailsService personDetailsService;
     @Autowired PatJpaRepository patRepo;
+    @Autowired InternshipRepository internshipJpaRepository;
 
     @Bean
     @Transactional
@@ -48,6 +50,15 @@ public class ModelInit {
                 if (jokeFound.size() == 0)
                     jokesRepo.save(new Assigment(null, joke, 0, 0)); //JPA save
             } */
+
+            // Internship database is populated with starting internships
+            Internship[] internshipArray = Internship.internshipInit();
+            for (Internship internship : internshipArray) {
+                Internship internshipFound = internshipJpaRepository.findByName(internship.getName());  // JPA lookup
+                if (internshipFound == null) { // add if not found
+                    internshipJpaRepository.save(internship); // JPA save
+                }
+            }
 
             // Person database is populated with starting people
             Person[] personArray = Person.init();

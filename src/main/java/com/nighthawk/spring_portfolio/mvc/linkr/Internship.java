@@ -36,21 +36,21 @@ public class Internship {
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> students = new HashSet<>();
 
-    public Internship(String name, String location, String industry, String ceo) {
+    public Internship(String name, String location, String industry, String ceo, String description, String website) {
         this.name = name;
         this.location = location;
         this.industry = industry;
         this.foundedYear = Year.now().getValue();
         this.ceo = ceo;
         this.size = 0;
-        this.description = null;
-        this.website = null;
+        this.description = description;
+        this.website = website;
     }
 
     public static Internship[] internshipInit() {
-        Internship c1 = new Internship("Name 1", "California", "Tech", "None");
-        Internship c2 = new Internship("Name 2", "India", "Hospitality", "Tanay");
-        Internship c3 = new Internship("Name 3", "Shanghai", "Tax Fraud", "Paaras");
+        Internship c1 = new Internship("Name 1", "California", "Tech", "None", "heehee", "heehee");
+        Internship c2 = new Internship("Name 2", "India", "Hospitality", "Tanay", "heehee", "heehee");
+        Internship c3 = new Internship("Name 3", "Shanghai", "Tax Fraud", "Paaras", "heehee", "heehee");
         return new Internship[]{c1, c2, c3};
     }
 }

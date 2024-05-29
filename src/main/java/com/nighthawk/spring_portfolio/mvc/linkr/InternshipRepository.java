@@ -15,4 +15,6 @@ public interface InternshipRepository extends JpaRepository<Internship, Long> {
      Long getMaxId();
 
     List<Internship> findInternshipByNameIgnoreCase(String name);
+
+    Internship findByName(String name);
 }
