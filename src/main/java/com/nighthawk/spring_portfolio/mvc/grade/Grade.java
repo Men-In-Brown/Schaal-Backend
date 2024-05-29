@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Grade {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Change strategy to IDENTITY
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     // Other attributes and methods remain unchanged
     // email, password, roles are key attributes to login and authentication
