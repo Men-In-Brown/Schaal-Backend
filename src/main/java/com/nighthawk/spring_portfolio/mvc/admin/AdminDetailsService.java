@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nighthawk.spring_portfolio.mvc.person.PersonRoleJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.teacher.Teacher;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ public class AdminDetailsService implements UserDetailsService {
     private AdminJpaRepository adminJpaRepository;
 
     @Autowired
-    private AdminRoleJpaRepository adminRoleJpaRepository;
+    private PersonRoleJpaRepository personroleJpaRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -82,7 +83,7 @@ public class AdminDetailsService implements UserDetailsService {
                 admin.setPassword(passwordEncoder.encode(password));
             }
             if (admin.getRoles().isEmpty()) {
-                AdminRole role = adminRoleJpaRepository.findByName(roleName);
+                AdminRole role = personroleJpaRepository.findByName(roleName);
                 if (role != null) {
                     admin.getRoles().add(role);
                 }
@@ -91,24 +92,24 @@ public class AdminDetailsService implements UserDetailsService {
     }
 
     public void saveRole(AdminRole role) {
-        AdminRole roleObj = adminRoleJpaRepository.findByName(role.getName());
+        AdminRole roleObj = personroleJpaRepository.findByName(role.getName());
         if (roleObj == null) {
-            adminRoleJpaRepository.save(role);
+            personroleJpaRepository.save(role);
         }
     }
 
     public List<AdminRole> listAllRoles() {
-        return adminRoleJpaRepository.findAll();
+        return personroleJpaRepository.findAll();
     }
 
     public AdminRole findRole(String roleName) {
-        return adminRoleJpaRepository.findByName(roleName);
+        return personroleJpaRepository.findByName(roleName);
     }
 
     public void addRoleToAdmin(String email, String roleName) {
         Admin admin = adminJpaRepository.findByEmail(email);
         if (admin != null) {
-            AdminRole role = adminRoleJpaRepository.findByName(roleName);
+            AdminRole role = personroleJpaRepository.findByName(roleName);
             if (role != null) {
                 boolean addRole = true;
                 for (AdminRole roleObj : admin.getRoles()) {
