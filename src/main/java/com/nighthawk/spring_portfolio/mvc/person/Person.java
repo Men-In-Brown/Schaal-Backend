@@ -1,5 +1,6 @@
 package com.nighthawk.spring_portfolio.mvc.person;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -91,7 +92,7 @@ public class Person {
     private Collection<String> subjectsOfInterest = new ArrayList<>();
 
     // Constructor used when building object from an API
-    public Person(String email, String password, String name, String usn, String[] subjectsOfInterest, Date dob) {
+    public Person(String email, String password, String name, String usn, Date dob, String[] subjectsOfInterest) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -111,15 +112,32 @@ public class Person {
         p1.setEmail("toby@gmail.com");
         p1.setPassword("123toby");
         p1.setUsn("bigT");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("01-01-1840");
+            p1.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
         Collection<String> tobySubjects = new ArrayList<>();
         tobySubjects.add("Computer Science");
         tobySubjects.add("Chemistry");
         p1.setSubjectsOfInterest(tobySubjects);
+
         Person p2 = new Person();
         p2.setName("Alexander Graham Bell");
         p2.setEmail("lexb@gmail.com");
         p2.setPassword("123LexB!");
         p2.setUsn("phoneNumber1");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("01-01-1840");
+            p2.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
+        Collection<String> alexSubjects = new ArrayList<>();
+        alexSubjects.add("Computer Science");
+        alexSubjects.add("English");
+        p2.setSubjectsOfInterest(alexSubjects);
         // p2.setStatus("online");
 
         Person p3 = new Person();
@@ -127,6 +145,12 @@ public class Person {
         p3.setEmail("niko@gmail.com");
         p3.setPassword("123Niko!");
         p3.setUsn("iOwnX");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("01-01-1840");
+            p3.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
         // p3.setStatus("online");
         Collection<String> nikoSubjects = new ArrayList<>();
         nikoSubjects.add("Physics");
@@ -138,6 +162,12 @@ public class Person {
         p4.setEmail("madam@gmail.com");
         p4.setPassword("123Madam!");
         p4.setUsn("madRadium");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("01-01-1840");
+            p4.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
         // p4.setStatus("online");
 
         Person p5 = new Person();
@@ -145,6 +175,12 @@ public class Person {
         p5.setEmail("jm1021@gmail.com");
         p5.setPassword("123Qwerty!");
         p5.setUsn("jMort");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("11-16-1980");
+            p5.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
         Collection<String> mortSubjects = new ArrayList<>();
         mortSubjects.add("Computer Science");
         mortSubjects.add("Chemistry");
@@ -155,6 +191,12 @@ public class Person {
         p6.setEmail("hop@gmail.com");
         p6.setPassword("123hop");
         p6.setUsn("mrsComputer");
+        try {  // All data that converts formats could fail
+            Date d = new SimpleDateFormat("MM-dd-yyyy").parse("01-01-1840");
+            p6.setDob(d);
+        } catch (Exception e) {
+            // no actions as dob default is good enough
+        }
 
         // Array definition and data initialization
         Person persons[] = { p1, p2, p3, p4, p5, p6 };
