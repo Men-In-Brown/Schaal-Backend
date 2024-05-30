@@ -361,8 +361,8 @@ public ResponseEntity<Object> postFlashcard(
     if (desc.length() < 3 || desc.length() > 50000) {
         return new ResponseEntity<>("Desc is less than 3 or longer than 50000 characters", HttpStatus.BAD_REQUEST);
     }
-    if (maxPoints <= 0) {
-        return new ResponseEntity<>("maxPoints must be positive", HttpStatus.BAD_REQUEST);
+    if (maxPoints < 0) {
+        return new ResponseEntity<>("maxPoints must be positive or 0", HttpStatus.BAD_REQUEST);
     }
     if (reqCards <= 0) {
         return new ResponseEntity<>("reqCards must be positive", HttpStatus.BAD_REQUEST);

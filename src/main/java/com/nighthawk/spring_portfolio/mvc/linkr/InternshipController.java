@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.nighthawk.hacks.InternshipSearcher;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,13 +43,26 @@ public class InternshipController {
         }
     }
 
+    @GetMapping("/{searchQuery}")
+    public ResponseEntity<List<InternshipDTO>> getSearchedInternships(@PathVariable String searchQuery) {
+        List<Internship> internships = internshipService.getAllInternships();
+        List<InternshipDTO> internshipDTOs = internships.stream()
+                .map(internship -> new InternshipDTO(internship))
+                .collect(Collectors.toList());
+        List<InternshipDTO> searched = InternshipSearcher.searchInternships(internshipDTOs, searchQuery);
+        return new ResponseEntity<>(searched, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<InternshipDTO> addInternship(@RequestBody InternshipDTO internshipDTO) {
         Internship internship = new Internship(
                 internshipDTO.getName(),
                 internshipDTO.getLocation(),
                 internshipDTO.getIndustry(),
-                internshipDTO.getCeo()
+                internshipDTO.getCeo(), 
+                internshipDTO.getFoundedYear(), 
+                internshipDTO.getDescription(), 
+                internshipDTO.getWebsite()
         );
         Internship addedInternship = internshipService.createInternship(internship);
         InternshipDTO addedInternshipDTO = new InternshipDTO(addedInternship);

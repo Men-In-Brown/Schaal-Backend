@@ -3,11 +3,8 @@ package com.nighthawk.spring_portfolio.mvc.person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -25,13 +22,15 @@ public class PersonRole {
         this.name = name;
     }
 
-    public static PersonRole[] init() {
+    public static PersonRole[] init() { 
+        PersonRole user = new PersonRole("ROLE_USER");
         PersonRole student = new PersonRole("ROLE_STUDENT");
         PersonRole teacher = new PersonRole("ROLE_TEACHER");
-        PersonRole employer = new PersonRole("ROLE_EMPLOYER");
+        PersonRole intern = new PersonRole("ROLE_INTERN");
         PersonRole admin = new PersonRole("ROLE_ADMIN");
-
-        PersonRole[] initArray = {student, teacher, admin, employer};
+        PersonRole[] initArray = {user, student, teacher, intern, admin};
         return initArray;
     }
+
+
 }

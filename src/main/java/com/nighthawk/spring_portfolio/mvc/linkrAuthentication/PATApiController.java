@@ -1,6 +1,7 @@
 package com.nighthawk.spring_portfolio.mvc.linkrAuthentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +30,16 @@ public class PATApiController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<LinkrPAT> createPAT(@RequestParam("user") String user){
-        LinkrPAT l = new LinkrPAT(user);
-        patJpaRepository.save(l);
-        return ResponseEntity.ok(l);
+    public ResponseEntity<Object> createPAT(@RequestParam("user") String user){
+        List<LinkrPAT> pat = patJpaRepository.findAllByUser(user);
+        if(pat.size() == 0){
+            LinkrPAT l = new LinkrPAT(user);
+            patJpaRepository.save(l);
+            return ResponseEntity.ok(l);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("Creating PAT for already occurring site");
+        }
     }
 }
