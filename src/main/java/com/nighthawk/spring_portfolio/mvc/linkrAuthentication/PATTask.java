@@ -13,7 +13,7 @@ public class PATTask {
     @Autowired
     PatJpaRepository PATRepo; 
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 100000)
     public void TestTask(){
         List<LinkrPAT> pats = PATRepo.findAll();
         for(LinkrPAT p : pats){
