@@ -21,7 +21,7 @@ public class PATApiController {
     public List<LinkrPAT> getAllPATs() {
         return patJpaRepository.findAll();
     }
-
+    
     // Get PAT by ID
     @GetMapping("/{user}")
     public ResponseEntity<List<LinkrPAT>> getPATById(@PathVariable String user) {
