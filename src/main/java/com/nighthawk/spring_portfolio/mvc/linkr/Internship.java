@@ -2,10 +2,9 @@ package com.nighthawk.spring_portfolio.mvc.linkr;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
+import com.nighthawk.spring_portfolio.mvc.person.Person;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +33,7 @@ public class Internship {
     private String ceo;
 
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<User> students = new HashSet<>();
+    private Set<Person> students = new HashSet<>();
 
     public Internship(String name, String location, String industry, String ceo, int foundedYear, String description, String website) {
         this.name = name;

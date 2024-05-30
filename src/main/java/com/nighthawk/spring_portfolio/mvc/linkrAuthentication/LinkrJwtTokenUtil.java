@@ -2,9 +2,7 @@ package com.nighthawk.spring_portfolio.mvc.linkrAuthentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import com.nighthawk.spring_portfolio.mvc.linkr.User;
-
+import com.nighthawk.spring_portfolio.mvc.person.Person;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class LinkrJwtTokenUtil {
 	}
 
 	//generate token for user
-	public String generateToken(User userDetails) {
+	public String generateToken(Person userDetails) {
 		Map<String, Object> claims = new HashMap<>();
 		return doGenerateToken(claims, userDetails.getEmail());
 	}

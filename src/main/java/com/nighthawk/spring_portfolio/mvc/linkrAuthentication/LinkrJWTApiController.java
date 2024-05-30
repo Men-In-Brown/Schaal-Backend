@@ -13,13 +13,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.nighthawk.spring_portfolio.mvc.linkr.User;
-import com.nighthawk.spring_portfolio.mvc.linkr.UserService;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
-    
-// Controller class for handling authentication-related requests using JWT tokens.
-// Allows cross-origin requests from any origin.
+
 @RestController
 @CrossOrigin(origins = "*")
 public class LinkrJWTApiController {
@@ -31,17 +27,22 @@ public class LinkrJWTApiController {
     private LinkrJwtTokenUtil jwtTokenUtil; // Utility class for generating JWT tokens
 
     @Autowired
-    private UserService employeeService; // Service for managing employee-related operations
+    private PersonDetailsService employeeService; // Service for managing employee-related operations
 
     // Endpoint for authenticating users and generating JWT tokens
     @PostMapping("/linkrAuthenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody User authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody Person authenticationRequest) throws Exception {
         // Authenticate user credentials
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
         // Load user details based on the provided username (email)
-        final User userDetails = employeeService.loadUserByUsername(authenticationRequest.getEmail());
+        final UserDetails userDetails = employeeService.loadUserByUsername(authenticationRequest.getEmail());
+        // Cast the UserDetails to Person if necessary
+        if (!(userDetails instanceof Person)) {
+            throw new Exception("Invalid user details");
+        }
+        final Person personDetails = (Person) userDetails;
         // Generate JWT token for the authenticated user
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = jwtTokenUtil.generateToken(personDetails);
         // Create HTTP cookie containing the JWT token
         final ResponseCookie tokenCookie = ResponseCookie.from("jwt", token)
             .httpOnly(true)
