@@ -59,7 +59,10 @@ public class InternshipController {
                 internshipDTO.getName(),
                 internshipDTO.getLocation(),
                 internshipDTO.getIndustry(),
-                internshipDTO.getCeo()
+                internshipDTO.getCeo(), 
+                internshipDTO.getFoundedYear(), 
+                internshipDTO.getDescription(), 
+                internshipDTO.getWebsite()
         );
         Internship addedInternship = internshipService.createInternship(internship);
         InternshipDTO addedInternshipDTO = new InternshipDTO(addedInternship);
