@@ -15,6 +15,5 @@ public interface PatJpaRepository extends JpaRepository<LinkrPAT, Date> {
 
     List<LinkrPAT> findAllByUser(String user);
     List<LinkrPAT> findAll();
-    List<LinkrPAT> findByPats();
 
 }
