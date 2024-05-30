@@ -46,7 +46,7 @@ public class UserController {
 
     // Endpoint to get an student by their ID
     @GetMapping("/{studentId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')or hasRole('EMPLOYER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')or hasRole('INTERN')")
     public ResponseEntity<User> getUserById(@PathVariable Long studentId) {
         log.info("Attempting to retrieve student with ID: {}", studentId); // Logging the attempt
         Optional<User> student = UserService.getUserById(studentId); // Retrieving student by ID

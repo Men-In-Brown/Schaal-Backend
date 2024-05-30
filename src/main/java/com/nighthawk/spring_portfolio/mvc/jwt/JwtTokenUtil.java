@@ -4,7 +4,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Base64;
 import java.util.function.Function;
@@ -13,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.*;
 
+import java.util.List;
 
 @Component
 public class JwtTokenUtil {
@@ -53,7 +53,7 @@ public class JwtTokenUtil {
 		return expiration.before(new Date());
 	}
 
-	// Generate token for user
+	//generate token for user
 	public String generateToken(UserDetails userDetails, List<String> roles) {
 		// Create a map to store JWT claims, 
 		// ... a claim is information asserted about the logged in user
