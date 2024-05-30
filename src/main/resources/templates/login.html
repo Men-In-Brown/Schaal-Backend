@@ -26,7 +26,9 @@
                 <label for="email">Username:</label><br>
                 <input type="text" id="username" name="username"><br>
                 <label for="password">Password:</label><br>
-                <input type="text" id="password" name="password"><br><br>
+                <input type="password" id="password" name="password"><br><br>
+                <label for="pat">Personal Access Token:</label><br>
+                <input type="text" id="pat" name="pat"><br><br>
                 <input type="submit" value="Login" onclick="login()">
                 <p id="message"></p>
             </div>
@@ -35,10 +37,13 @@
             function login() {
                 var email = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
-                var data = {email:email, password:password};
+                var pat = document.getElementById('pat').value;
+                console.log(email);
+                console.log(password);
+                var data = {email:email, password:password, pat:pat};
                 fetch("/authenticate", {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)}).then((data) => {
                     if (data.status == 200) {
-                        window.location.replace("/mvc/person/read");
+                        window.location.replace("/mvc/personRole/read");
                     } else {
                         document.getElementById('message').innerHTML = "Invalid email or password"
                     }

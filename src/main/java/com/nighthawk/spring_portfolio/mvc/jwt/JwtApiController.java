@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 // import io.jsonwebtoken.Jws;
 // import io.jsonwebtoken.Jwts;
 
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.LinkrAuthenticationEntryPoint;
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.LinkrPAT;
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.PatJpaRepository;
 import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
 
@@ -40,10 +43,23 @@ public class JwtApiController {
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
+	private PatJpaRepository patRepo;
+
+	@Autowired
 	private PersonDetailsService personDetailsService;
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+		List<LinkrPAT> found = patRepo.findAllByUser(authenticationRequest.getEmail());
+		if(found.size() == 0 && !(authenticationRequest.getPAT().equals(""))){
+			return new ResponseEntity<>("Token generation failed", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(found.size() != 0 && authenticationRequest.getPAT().equals("")){
+			return new ResponseEntity<>("Token generation failed", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(found.size() != 0 && !(authenticationRequest.getPAT().equals(found.get(0).getPAT()))){
+			return new ResponseEntity<>("Token generation failed", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 		final UserDetails userDetails = personDetailsService
 				.loadUserByUsername(authenticationRequest.getEmail());
