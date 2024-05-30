@@ -35,10 +35,12 @@
             function login() {
                 var email = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
+                console.log(email);
+                console.log(password);
                 var data = {email:email, password:password};
                 fetch("/authenticate", {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)}).then((data) => {
                     if (data.status == 200) {
-                        window.location.replace("/mvc/person/read");
+                        window.location.replace("/mvc/personRole/read");
                     } else {
                         document.getElementById('message').innerHTML = "Invalid email or password"
                     }
