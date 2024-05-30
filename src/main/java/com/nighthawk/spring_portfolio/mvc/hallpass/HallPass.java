@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class HallPass {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "hallpass_id")
     private Long id;
 

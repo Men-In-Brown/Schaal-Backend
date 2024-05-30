@@ -20,7 +20,7 @@ public class PersonRoleViewController {
     public String personRole(Model model) {
         List<PersonRole> list = repository.findAll();
         model.addAttribute("list", list);
-        return "personRole/read";
+        return "index";
     }
 
     @GetMapping("/create")

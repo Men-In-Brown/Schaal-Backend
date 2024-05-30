@@ -21,7 +21,7 @@ public class PATApiController {
     public List<LinkrPAT> getAllPATs() {
         return patJpaRepository.findAll();
     }
-
+    
     // Get PAT by ID
     @GetMapping("/{user}")
     public ResponseEntity<List<LinkrPAT>> getPATById(@PathVariable String user) {
@@ -40,6 +40,19 @@ public class PATApiController {
         else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body("Creating PAT for already occurring site");
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deletePAT(@RequestParam("user") String user){
+        List<LinkrPAT> pat = patJpaRepository.findAllByUser(user);
+        if(pat.size() != 0){
+            patJpaRepository.deleteById(pat.get(0).getDate());
+            return ResponseEntity.ok(pat.get(0));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("Issue with PAT you are requesting");
         }
     }
 }

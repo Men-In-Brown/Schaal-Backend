@@ -13,6 +13,7 @@ Extends the JpaRepository interface from Spring Data JPA.
  */
 public interface GradeJpaRepository extends JpaRepository<Grade, Long> {
     Grade findByName(String name);
+    Grade findByEmail(String email);
     List<Grade> findAllByOrderByNameAsc();
     List<Grade> findByNameIgnoreCase(String name);
     List<Grade> findByEmailIgnoreCase(String email);
