@@ -11,6 +11,7 @@ import com.nighthawk.spring_portfolio.mvc.jwt.JwtTokenUtil;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/person")
 public class PersonApiController {
     // @Autowired

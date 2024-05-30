@@ -6,10 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.junit.experimental.theories.internal.Assignments;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.nighthawk.spring_portfolio.mvc.jokes.Jokes;
-import com.nighthawk.spring_portfolio.mvc.jokes.JokesJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.assignment.Assignment;
+import com.nighthawk.spring_portfolio.mvc.assignment.AssignmentJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.grade.Grade;
+import com.nighthawk.spring_portfolio.mvc.grade.GradeJpaRepository;
+import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
+import com.nighthawk.spring_portfolio.mvc.linkr.InternshipRepository;
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.LinkrPAT;
+import com.nighthawk.spring_portfolio.mvc.linkrAuthentication.PatJpaRepository;
+
 import com.nighthawk.spring_portfolio.mvc.linkr.Internship;
 import com.nighthawk.spring_portfolio.mvc.linkr.InternshipRepository;
 import com.nighthawk.spring_portfolio.mvc.note.Note;
@@ -28,10 +36,13 @@ import java.util.List;
 @Component
 @Configuration // Scans Application for ModelInit Bean, this detects CommandLineRunner
 public class ModelInit {  
-    @Autowired JokesJpaRepository jokesRepo;
+    @Autowired AssignmentJpaRepository assignmentRepo;
+    @Autowired GradeJpaRepository gradeRepo;
     @Autowired NoteJpaRepository noteRepo;
     @Autowired PersonRoleJpaRepository roleRepo;
     @Autowired PersonDetailsService personService;
+    @Autowired PatJpaRepository patRepo;
+    @Autowired InternshipRepository internshipRepo;
     @Autowired PersonJpaRepository personJpaRepository;
     @Autowired InternshipRepository internshipRepository;
     @Autowired PasswordEncoder passwordEncoder;
@@ -67,4 +78,72 @@ public class ModelInit {
             personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
     };
 }
+}
+                // Name and email are used to lookup the person
+                List<Person> personFound = personDetailsService.list(person.getName(), person.getEmail());  // lookup
+                if (personFound.size() == 0) { // add if not found
+                    // Roles are added to the database if they do not exist
+                    List<PersonRole> updatedRoles = new ArrayList<>();
+                    for (PersonRole role : person.getRoles()) {
+                        // Name is used to lookup the role
+                        PersonRole roleFound = roleJpaRepository.findByName(role.getName());  // JPA lookup
+                        if (roleFound == null) { // add if not found
+                            // Save the new role to database
+                            roleJpaRepository.save(role);  // JPA save
+                            roleFound = role;
+                        }
+                        // Accumulate reference to role from database
+                        updatedRoles.add(roleFound);
+                    }
+                    // Update person with roles from role databasea
+                    person.setRoles(updatedRoles); // Object reference is updated
+
+                    // Save person to database
+                    personDetailsService.save(person); // JPA save
+
+                    // Add a "test note" for each new person
+                    String text = "Test " + person.getEmail();
+                    Note n = new Note(text, person);  // constructor uses new person as Many-to-One association
+                    noteRepo.save(n);  // JPA Save  
+		            //personService.addRoleToPerson(person.getEmail(), "ROLE_STUDENT");                
+                }
+            }
+
+            // Internship database is populated with starting internships
+            Internship[] internshipArray = Internship.internshipInit();
+            for (Internship internship : internshipArray) {
+                internshipRepo.save(internship); // JPA save
+            }
+
+	    // for lesson demonstration: giving admin role to Mortensen
+            //personService.addRoleToPerson(personArray[4].getEmail(), "ROLE_ADMIN");
+
+            //delete all entries from grade database
+            // gradeRepo.deleteAll();
+            // Grade[] gradeArray = Grade.init();
+            // for (Grade score : gradeArray) {
+            //     //List<Grade> test = gradeRepo.list(score.getName());  // lookup
+            //     //if (test.size() == 0) {
+            //         gradeRepo.save(score);
+            //     //};
+            // }
+
+            //delete all entries from grade database
+            /*assignmentRepo.deleteAll();
+            Assignment[] assignmentArray = Assignment.init();
+            for (Assignment score : assignmentArray) {
+                assignmentRepo.save(score);
+            }*/
+
+            LinkrPAT[] lst = LinkrPAT.init();
+            for(LinkrPAT l : lst){
+                List<LinkrPAT> found = patRepo.findAllByUser(l.getUser());
+                if(found.size() == 0){
+                    patRepo.save(l);
+                }
+            }
+        };
+
+        
+    }
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,10 +36,13 @@ public class Assignment {
     private int maxPoints;
 
     @Column()
-    private boolean quiz;
+    private String type;
 
     @Column()
     private int jointId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime due;
 
     /* HashMap is used to store JSON for daily "stats"
     "stats": {
@@ -51,13 +56,14 @@ public class Assignment {
     @Column(columnDefinition = "jsonb")
     private Map<String,Map<String, Object>> submissions = new HashMap<>(); 
 
-    public Assignment(String title, String desc, String link, int maxPoints, int jointId) {
+    public Assignment(String title, String desc, String link, int maxPoints, int jointId, LocalDateTime due) {
         this.title = title;
         this.desc = desc;
         this.link = link;
         this.maxPoints = maxPoints;
-        this.quiz = false;
+        this.type = "assignment";
         this.jointId = jointId;
+        this.due = due;
         //this.id = id;
     }
 }

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall Pass Management - Teacher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hall Pass Management - Teacher</h1>
+        <select id="teacherId" required>
+            <option value="1">Teacher1</option>
+            <option value="2">Teacher2</option>
+            <option value="3">Teacher3</option>
+            <option value="4">Teacher4</option>
+        </select>
+        <code>Temporary since the teacher is not logging in. 
+            Once the teacher is logged in, then this drop down is not needed. 
+            This is to show only those hall passes that belong to the logged in teacher.</code>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student ID</th>
+                    <!--<th>Teacher ID</th>-->
+                    <th>Reason</th>
+                    <th>Expiry Time</th>
+                    <th>
+                        <select id="status" required>
+                            <option value="All">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="hallPassTableBody">
+                <!-- Hall Pass records will be injected here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:8091/api/hallpass';
+        const teacherSelect = document.getElementById("teacherId");
+        const statusSelect = document.getElementById("status");
+        let teacherId = teacherSelect.value;
+        let status = statusSelect.value;
+
+        teacherSelect.addEventListener("change", (event) => {
+            teacherId = event.target.value;
+            fetchHallPasses(`${teacherId}`, `${status}`);
+        });
+
+        statusSelect.addEventListener("change", (event) => {
+            status = event.target.value;
+            fetchHallPasses(`${teacherId}`, `${status}`);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchHallPasses(teacherSelect.value, statusSelect.value);
+        });
+
+        async function fetchHallPasses(teacherId, status) {
+            const response = await fetch(`${apiUrl}/teacher/${teacherId}/status/${status}`);
+            const hallPasses = await response.json();
+            const tableBody = document.getElementById('hallPassTableBody');
+            tableBody.innerHTML = '';
+            hallPasses.forEach(hallPass => {
+                const row = document.createElement('tr');
+                //<td>${hallPass.teacherId}</td>
+                row.innerHTML = `
+                    <td>${hallPass.id}</td>
+                    <td>${hallPass.studentId}</td>
+                    <td>${hallPass.reason}</td>
+                    <td>${new Date(hallPass.expiryTime).toLocaleString()}</td>
+                    <td>${hallPass.status}</td>
+                    <td class="actions">
+                        <button onclick="updateHallPassStatus(${hallPass.id}, 'Approved')">Approve</button>
+                        <button onclick="updateHallPassStatus(${hallPass.id}, 'Rejected')">Reject</button>
+                        <button onclick="deleteHallPass(${hallPass.id})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function updateHallPassStatus(id, status) {
+            await fetch(`${apiUrl}/${id}/${status}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            fetchHallPasses(teacherSelect.value, statusSelect.value);
+        }
+
+        async function deleteHallPass(id) {
+            await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+            fetchHallPasses(teacherSelect.value, statusSelect.value);
+        }
+    </script>
+</body>
+</html>
