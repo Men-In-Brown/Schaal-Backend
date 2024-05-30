@@ -42,4 +42,17 @@ public class PATApiController {
             .body("Creating PAT for already occurring site");
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deletePAT(@RequestParam("user") String user){
+        List<LinkrPAT> pat = patJpaRepository.findAllByUser(user);
+        if(pat.size() != 0){
+            patJpaRepository.deleteById(pat.get(0).getDate());
+            return ResponseEntity.ok(pat.get(0));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("Issue with PAT you are requesting");
+        }
+    }
 }
