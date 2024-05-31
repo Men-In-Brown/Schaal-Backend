@@ -33,23 +33,23 @@ public class InternshipController {
     }
 
     @GetMapping("/{internshipId}")
-    public ResponseEntity<InternshipDTO> getInternshipById(@PathVariable Long internshipId) {
-        Optional<Internship> internship = internshipService.getInternshipById(internshipId);
+    public ResponseEntity<InternshipDTO> getInternshipById(@PathVariable int internshipId) {
+        Optional<Internship> internship = internshipService.getInternshipById((long) internshipId);
         if (internship.isPresent()) {
             InternshipDTO internshipDTO = new InternshipDTO(internship.get());
-            return ResponseEntity.ok().body(internshipDTO);
+            return ResponseEntity.ok().body(internshipDTO); 
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @GetMapping("/{searchQuery}")
-    public ResponseEntity<List<InternshipDTO>> getSearchedInternships(@PathVariable String searchQuery) {
+    @GetMapping("/search")
+    public ResponseEntity<List<InternshipDTO>> getSearchedInternships(@RequestParam String query) {
         List<Internship> internships = internshipService.getAllInternships();
         List<InternshipDTO> internshipDTOs = internships.stream()
                 .map(internship -> new InternshipDTO(internship))
                 .collect(Collectors.toList());
-        List<InternshipDTO> searched = InternshipSearcher.searchInternships(internshipDTOs, searchQuery);
+        List<InternshipDTO> searched = InternshipSearcher.searchInternships(internshipDTOs, query);
         return new ResponseEntity<>(searched, HttpStatus.OK);
     }
 
